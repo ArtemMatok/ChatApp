@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestChat.Server", "TestChat\Server\TestChat.Server.csproj", "{916AED5D-AF79-437C-B804-F1846A4B14B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestChat.Server", "TestChat\Server\TestChat.Server.csproj", "{916AED5D-AF79-437C-B804-F1846A4B14B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestChat.Client", "TestChat\Client\TestChat.Client.csproj", "{EA58F8FA-B0B4-4F49-8838-DB4494DAC9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestChat.Client", "TestChat\Client\TestChat.Client.csproj", "{EA58F8FA-B0B4-4F49-8838-DB4494DAC9EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestChat.Shared", "TestChat\Shared\TestChat.Shared.csproj", "{4D43A995-9285-41A7-BE27-E3D2DD653AC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestChat.Shared", "TestChat\Shared\TestChat.Shared.csproj", "{4D43A995-9285-41A7-BE27-E3D2DD653AC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

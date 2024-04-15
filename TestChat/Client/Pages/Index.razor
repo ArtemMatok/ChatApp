@@ -1,9 +1,116 @@
 ﻿@page "/"
+@using TestChat.Shared.DTOs 
+@inject IAccountService _accountService
+@inject NavigationManager _navManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Blazing Chat</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container">
+    <EditForm Model="LoginModel" OnValidSubmit="LoginAsync">
+        <div class="card text-center">
+            <div class="card-header">
+                <h2>Blazing Chat - Login</h2>
+            </div>
+            <div class="card-body">
 
-Welcome to your new app.
+                <DataAnnotationsValidator />
+                @if (!string.IsNullOrWhiteSpace(errorMessage))
+                {
+                    <p class="text-danger">@errorMessage</p>
+                }
+                <div class="mb-3">
+                    <InputText @bind-Value="LoginModel.UserName" DisplayName="UserName" class="form-control" placeholder="Username"></InputText>
+                    <ValidationMessage For="()=>LoginModel.UserName" />
+                </div>
+                <div class="mb-3">
+                    <InputText type="password" @bind-Value="LoginModel.Password" class="form-control" DisplayName="Password" placeholder="Password"></InputText>
+                    <ValidationMessage For="()=>LoginModel.Password" />
+                </div>
+                
+            </div>
+            <div class="card-footer text-muted">
+                <div class="mb-3">
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+                    @if(_isBusy)
+                    {
+                        <button class="btn btn-success" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span class="visually-hidden">Loading...</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-success float-start">Login</button>
+                    }
+
+                    <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+
+    @*<div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <h2>Blazing Chat - Login</h2>
+            <EditForm Model="LoginModel" OnInvalidSubmit="LoginAsync">
+                <DataAnnotationsValidator />
+                @if(!string.IsNullOrWhiteSpace(errorMessage))
+                {
+                    <p class="text-danger">@errorMessage</p>
+                }
+                <div class="mb-3">
+                    <InputText @bind-Value="LoginModel.UserName" DisplayName="UserName" class="form-control" placeholder="Username"></InputText>
+                    <ValidationMessage For="()=>LoginModel.UserName" />
+                </div>
+                <div class="mb-3">
+                    <InputText type="password" @bind-Value="LoginModel.Password" class="form-control"  DisplayName="Password" placeholder="Password"></InputText>
+                    <ValidationMessage For="()=>LoginModel.Password" />
+                </div>
+                <div class="mb-3">
+                    <button @onclick="LoginAsync" class="btn btn-success" >Login</button>
+                    <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
+                    <div class="clearfix"></div>
+                </div>
+            </EditForm>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>*@
+
+
+@code{
+
+    public LoginDto LoginModel { get; set; } = new LoginDto();
+
+    private bool _isBusy = false;
+    private string? errorMessage = null;
+
+    private async Task LoginAsync()
+    {
+        try
+        {
+            _isBusy = true;
+            var response = await _accountService.Login(LoginModel);
+            if(response.IsSuccessStatusCode)
+            {
+                _navManager.NavigateTo("/chat");
+            }
+            else
+            {
+
+                errorMessage = $"Incorect Username/Password";
+                _isBusy = false;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            _isBusy = false;
+        }
+    }
+}

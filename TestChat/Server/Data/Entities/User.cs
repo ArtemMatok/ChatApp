@@ -2,6 +2,7 @@
 
 namespace TestChat.Server.Data.Entities
 {
+    
     public class User
     {
         [Key]

@@ -12,6 +12,15 @@ namespace TestChat.Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Message>(x =>
+            {
+                x.HasOne(m => m.ToUser).WithMany().OnDelete(DeleteBehavior.NoAction);
+                x.HasOne(m => m.FromUser).WithMany().OnDelete(DeleteBehavior.NoAction);
+            });
+        }
     }
 }
