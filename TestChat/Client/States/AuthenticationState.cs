@@ -5,6 +5,8 @@ namespace TestChat.Client.States
 {
     public class AuthenticationState : INotifyPropertyChanged
     {
+        public const string AuthStoreKey = "authkey";
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public string? Name { get; set; }
         public string? Token { get; set; }

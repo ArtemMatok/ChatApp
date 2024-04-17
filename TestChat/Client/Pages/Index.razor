@@ -3,7 +3,7 @@
 @inject IAccountService _accountService
 @inject NavigationManager _navManager
 @inject HttpClient _httpClient
-
+@inject  IJSRuntime JsRuntime 
 
 <PageTitle>Blazing Chat</PageTitle>
 
@@ -106,6 +106,7 @@
                     PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
                 });
                 AuthenticationState.LoadState(authResult);
+                await JsRuntime.InvokeAsync("setToStorage", AuthenticationState.AuthStoreKey)
                 _navManager.NavigateTo("/chat");
             }
             else
