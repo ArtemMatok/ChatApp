@@ -17,7 +17,7 @@ namespace TestChat.Client.States
                 if(_isAuthenticated != value)
                 {
                     _isAuthenticated = value;
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(IsAuthenticated)));
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAuthenticated)));
                 }
             }
         }

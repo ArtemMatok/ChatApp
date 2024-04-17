@@ -5,6 +5,6 @@ namespace TestChat.Client.Services.AccountService
     public interface IAccountService
     {
         Task<HttpResponseMessage> Login(LoginDto loginModel);
-        Task<HttpResponseMessage> Register(RegisterDto registerModel);
+        Task<bool> Register(RegisterDto registerModel);
     }
 }

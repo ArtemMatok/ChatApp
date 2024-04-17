@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using TestChat.Client.States;
 using TestChat.Shared.DTOs;
 
 namespace TestChat.Client.Services.AccountService
@@ -7,10 +8,11 @@ namespace TestChat.Client.Services.AccountService
     public class AccountService : IAccountService
     {
         private readonly HttpClient _httpClient;
-
-        public AccountService(HttpClient httpClient)
+        private readonly AuthenticationState _authState;
+        public AccountService(HttpClient httpClient, AuthenticationState authState)
         {
             _httpClient = httpClient;
+            _authState = authState;
         }
 
         public async Task<HttpResponseMessage> Login(LoginDto loginModel)
@@ -24,6 +26,7 @@ namespace TestChat.Client.Services.AccountService
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     
                 });
+                _authState.LoadState(authResult);
                 return response;
             }
             else
@@ -45,7 +48,7 @@ namespace TestChat.Client.Services.AccountService
             
         }
 
-        public async Task<HttpResponseMessage> Register(RegisterDto registerModel)
+        public async Task<bool> Register(RegisterDto registerModel)
         {
             var response = await _httpClient.PostAsJsonAsync<RegisterDto>("/api/Account/Register", registerModel);
             if (response.IsSuccessStatusCode)
@@ -56,7 +59,8 @@ namespace TestChat.Client.Services.AccountService
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 
                 });
-                return response;
+                //_authState.LoadState(authResult);
+                return true;
             }
             else
             {
@@ -72,7 +76,7 @@ namespace TestChat.Client.Services.AccountService
                 //{
                 //    errorContent = $"Error {response.StatusCode} - ${response.ReasonPhrase}";
                 //}
-                return response;
+                return false;
             }
         }
     }

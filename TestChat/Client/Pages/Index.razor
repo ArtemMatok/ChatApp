@@ -2,6 +2,8 @@
 @using TestChat.Shared.DTOs 
 @inject IAccountService _accountService
 @inject NavigationManager _navManager
+@inject HttpClient _httpClient
+
 
 <PageTitle>Blazing Chat</PageTitle>
 
@@ -40,7 +42,7 @@
                     }
                     else
                     {
-                        <button type="submit" class="btn btn-success float-start">Login</button>
+                        <button type="submit" class="btn btn-success float-start" >Login</button>
                     }
 
                     <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
@@ -83,34 +85,94 @@
 
 
 @code{
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthenticationState { get; set; }
 
-    public LoginDto LoginModel { get; set; } = new LoginDto();
-
+    private LoginDto LoginModel { get; set; } = new();
     private bool _isBusy = false;
     private string? errorMessage = null;
-
     private async Task LoginAsync()
     {
         try
         {
             _isBusy = true;
-            var response = await _accountService.Login(LoginModel);
-            if(response.IsSuccessStatusCode)
+            errorMessage = null;
+            var response = await _httpClient.PostAsJsonAsync<LoginDto>("/api/account/Login", LoginModel);
+            if (response.IsSuccessStatusCode)
             {
+                var content = await response.Content.ReadAsStringAsync();
+                var authResult = System.Text.Json.JsonSerializer.Deserialize<AuthResponseDto>(content, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                });
+                AuthenticationState.LoadState(authResult);
                 _navManager.NavigateTo("/chat");
             }
             else
             {
-
-                errorMessage = $"Incorect Username/Password";
+                string? errorContent = null;
+                try
+                {
+                    errorContent = await response.Content.ReadAsStringAsync();
+                }
+                catch
+                {
+                }
+                if (string.IsNullOrWhiteSpace(errorContent))
+                {
+                    errorContent = $"Error {response.StatusCode} - ${response.ReasonPhrase}";
+                }
                 _isBusy = false;
+                errorMessage = errorContent;
             }
-
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            errorMessage = ex.Message;
-            _isBusy = false;
+
+            throw;
         }
     }
+
+
+
+
+
+
+
+
+    //[CascadingParameter(Name = "AuthenticationState")]
+    //public AuthenticationState AuthState { get; set; } = new();
+
+
+    //public LoginDto LoginModel { get; set; } = new LoginDto();
+
+    //private bool _isBusy = false;
+    //private string? errorMessage = null;
+
+    //private async Task LoginAsync()
+    //{
+    //    try
+    //    {
+    //        _isBusy = true;
+    //        var response = await _accountService.Login(LoginModel);
+
+    //        if (response.IsSuccessStatusCode)
+    //        {
+
+    //            _navManager.NavigateTo("/chat");
+    //        }
+    //        else
+    //        {
+
+    //            errorMessage = $"Incorect Username/Password";
+    //            _isBusy = false;
+    //        }
+
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        errorMessage = ex.Message;
+    //        _isBusy = false;
+    //    }
+    //}
 }
