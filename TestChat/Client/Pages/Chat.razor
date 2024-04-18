@@ -1,5 +1,8 @@
 ﻿@page "/chat"
 @inject NavigationManager _navManager
+@implements IAsyncDisposable
+@using TestChat.Shared.Chat 
+
 
 <div class="container">
     <div class="card">
@@ -16,8 +19,9 @@
             <div class="row">
                 <div class="col-3">
                     @*User*@
-                    <span>User List</span>
-                </div>
+                    <UserListComponent Users="Users" />
+                    
+                 </div>
                 <div class="col-9">
                     @*Chat Message Window*@
                     <span>Chat messages</span>
@@ -32,17 +36,56 @@
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
 
+    private HubConnection? _hubConnection;
 
-    protected override void OnInitialized()
+    public ICollection<string> Users { get; set; } = new HashSet<string>();
+
+    protected override async void OnInitialized()
     {
         base.OnInitialized();
-        if (AuthState.IsAuthenticated)
+        if (!AuthState.IsAuthenticated)
         {
-
+            _navManager.NavigateTo("/");
         }
         else
         {
-            _navManager.NavigateTo("/");
+
+            _hubConnection = ConfigureHubConnection();
+
+
+            await _hubConnection.StartAsync();
+            await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.ConnectUser), AuthState.Name);
+        }
+
+
+    }
+
+    private HubConnection ConfigureHubConnection()
+    {
+        var hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navManager.ToAbsoluteUri("/hub/blazing-chat"))
+            .Build();
+
+        hubConnection.On<string>(nameof(IBlazingChatHubClient.UserConnected), (userName) =>
+        {
+            Users.Add(userName);
+            StateHasChanged();
+        });
+
+        //hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.ConnectedUsersList), (userNames) =>
+        //{
+        //    Users = userNames;
+        //    StateHasChanged();
+        //});
+
+        return hubConnection;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if(_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
         }
     }
 }

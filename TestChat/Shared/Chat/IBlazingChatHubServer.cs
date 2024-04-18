@@ -7,8 +7,8 @@ using TestChat.Shared.DTOs;
 
 namespace TestChat.Shared.Chat
 {
-    public interface IBlazingChatHubClient
+    public interface IBlazingChatHubServer
     {
-        Task UserConnected(string userName);
+        Task ConnectUser(string userName);
     }
 }

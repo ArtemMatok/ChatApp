@@ -1,7 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager _navManager  
 @inject IJSRuntime JsRuntime
+@using System.Text.Json
 
+ 
 <CascadingValue Value="AuthenticationState" Name="AuthenticationState">
     <div class="page">
         <div class="sidebar">
@@ -26,10 +28,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authStateJson =  await JsRuntime.InvokeAsync<string>("getFromStorage", AuthenticationState.AuthStoreKey);
+        var authStateJson =  await JsRuntime.InvokeAsync<string>("window.getFromStorage", AuthenticationState.AuthStoreKey);
         if(!string.IsNullOrWhiteSpace(authStateJson))
         {
-            var authState = System.Text.Json.JsonSerializer.Deserialize<AuthResponseDto>(authStateJson);
+            var authState = TestChat.Client.Helpers.JsonConverter.Deserialize<AuthResponseDto>(authStateJson);
             AuthenticationState.LoadState(authState);
 
             if(AuthenticationState.IsAuthenticated)
