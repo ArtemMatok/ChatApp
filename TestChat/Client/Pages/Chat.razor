@@ -19,12 +19,12 @@
             <div class="row">
                 <div class="col-3">
                     @*User*@
-                    <UserListComponent Users="Users" />
+                    <UserListComponent  Users="Users" OnUserSelected="OnUserSelected"/>
                     
                  </div>
                 <div class="col-9">
                     @*Chat Message Window*@
-                    <span>Chat messages</span>
+                   <ChatMessages SelectedUser="_selectedUser"/>
                 </div>
             </div>
         </div>
@@ -35,10 +35,12 @@
 @code {
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
-
     private HubConnection? _hubConnection;
+    public ICollection<UserDto> Users { get; set; } = new HashSet<UserDto>();
+    private UserDto? _selectedUser = null;
 
-    public ICollection<string> Users { get; set; } = new HashSet<string>();
+
+
 
     protected override async void OnInitialized()
     {
@@ -66,17 +68,19 @@
             .WithUrl(_navManager.ToAbsoluteUri("/hub/blazing-chat"))
             .Build();
 
-        hubConnection.On<string>(nameof(IBlazingChatHubClient.UserConnected), (userName) =>
+        hubConnection.On<UserDto>(nameof(IBlazingChatHubClient.UserConnected), (userName) =>
         {
             Users.Add(userName);
             StateHasChanged();
         });
 
-        //hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.ConnectedUsersList), (userNames) =>
-        //{
-        //    Users = userNames;
-        //    StateHasChanged();
-        //});
+
+        hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.ConnectedUsersList), (userNames) =>
+        {
+            Users = userNames;
+            StateHasChanged();
+        });
+
 
         return hubConnection;
     }
@@ -88,4 +92,7 @@
             await _hubConnection.DisposeAsync();
         }
     }
+
+
+    private async Task OnUserSelected(UserDto user) => _selectedUser = user;
 }
