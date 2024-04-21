@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using TestChat.Shared.Chat;
 using TestChat.Shared.DTOs;
 
 namespace TestChat.Server.Hubs
 {
-    
+    [Authorize]
     public class BlazingChatHub : Hub<IBlazingChatHubClient>, IBlazingChatHubServer
     {
         //private static readonly ICollection<string> _connectedUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

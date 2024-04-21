@@ -3,6 +3,7 @@
 @inject IAccountService _accountService
 @inject NavigationManager _navManager 
 @inject HttpClient _httpClient
+@inject IJSRuntime JsRuntime 
 
 <PageTitle>Register Blazing Chat</PageTitle>
 
@@ -69,12 +70,13 @@
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var authResult = System.Text.Json.JsonSerializer.Deserialize<AuthResponseDto>(content, new System.Text.Json.JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
-                });
+                var authResult = TestChat.Client.Helpers.JsonConverter.Deserialize<AuthResponseDto>(content);
+
+                var serialized = TestChat.Client.Helpers.JsonConverter.Serialize(authResult);
+                await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
+                //_navManager.NavigateTo("/chat");
                 AuthenticationState.LoadState(authResult);
-                _navManager.NavigateTo("/chat");
+
             }
             else
             {

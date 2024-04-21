@@ -1,7 +1,14 @@
-﻿window.getFromStorage = (key) => {
-   return  localStorage.getItem(key);
+﻿const storage = window.localStorage
+
+
+window.getFromStorage = (key) => {
+    return storage.getItem(key);
 }
 
 window.setToStorage = (key, value) => {
-    localStorage.setItem(key, value);
+    storage.setItem(key, value);
+}
+
+window.removeFromStorage = (key) => {
+    storage.removeItem(key);
 }

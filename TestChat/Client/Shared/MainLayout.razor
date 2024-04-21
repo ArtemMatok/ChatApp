@@ -2,7 +2,7 @@
 @inject NavigationManager _navManager  
 @inject IJSRuntime JsRuntime
 @using System.Text.Json
-
+@implements IDisposable
  
 <CascadingValue Value="AuthenticationState" Name="AuthenticationState">
     <div class="page">
@@ -39,5 +39,29 @@
                 _navManager.NavigateTo("/chat");
             }
         }
+
+        AuthenticationState.PropertyChanged += AuthenticationStateChanged;
+    }
+
+    private void AuthenticationStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName == nameof(AuthenticationState.IsAuthenticated))
+        {
+            if(AuthenticationState.IsAuthenticated)
+            {
+                _navManager.NavigateTo("/chat");
+            }
+            else
+            {
+                _navManager.NavigateTo("/");
+            }
+
+        }
+    }
+
+    public void Dispose()
+    {
+        AuthenticationState.PropertyChanged -= AuthenticationStateChanged;
+
     }
 }

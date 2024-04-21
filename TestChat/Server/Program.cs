@@ -18,6 +18,21 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = TokenService.GetTokenValidationParameters(builder.Configuration);
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = (context) =>
+        {
+            if(context.Request.Path.StartsWithSegments("/hub/blazing-chat"))
+            {
+                var jwt = context.Request.Query["access_token"];
+                if(!string.IsNullOrWhiteSpace(jwt))
+                {
+                    context.Token = jwt;
+                }
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddTransient<TokenService>();
 
@@ -54,6 +69,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();

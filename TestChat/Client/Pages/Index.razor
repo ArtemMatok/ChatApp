@@ -10,9 +10,9 @@
 
 <div class="container">
     <EditForm Model="LoginModel" OnValidSubmit="LoginAsync">
-        <div class="card text-center">
-            <div class="card-header">
-                <h2>Blazing Chat - Login</h2>
+        <div class="card text-center br-0">
+            <div class="card-header bg-main">
+                <h2 class="text-white">Blazing Chat - Login</h2>
             </div>
             <div class="card-body">
 
@@ -103,11 +103,12 @@
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var authResult = TestChat.Client.Helpers.JsonConverter.Deserialize<AuthResponseDto>(content);
-                AuthenticationState.LoadState(authResult);
 
                 var serialized = TestChat.Client.Helpers.JsonConverter.Serialize(authResult);
                 await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
-                _navManager.NavigateTo("/chat");
+                //_navManager.NavigateTo("/chat");
+                AuthenticationState.LoadState(authResult);
+
             }
             else
             {

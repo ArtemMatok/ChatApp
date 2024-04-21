@@ -8,7 +8,7 @@ namespace TestChat.Client.States
         public const string AuthStoreKey = "authkey";
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public string? Name { get; set; }
+        public UserDto User { get; set; } = default;
         public string? Token { get; set; }
         public bool _isAuthenticated  { get; set; }
         public bool IsAuthenticated
@@ -26,14 +26,14 @@ namespace TestChat.Client.States
 
         public void LoadState(AuthResponseDto authResponseDto)
         {
-            Name = authResponseDto.Name;
+            User = authResponseDto.User;
             Token = authResponseDto.Token;
             IsAuthenticated = true;
         }
 
-        public void Unload()
+        public void UnloadState()
         {
-            Name = null;
+            User = default;
             Token = null;
             IsAuthenticated = false;
         }

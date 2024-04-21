@@ -50,7 +50,7 @@ namespace TestChat.Server.Controllers
         private AuthResponseDto GenerateToken(User user)
         {
             var token = _tokenService.GenerateJWT(user);
-            return new AuthResponseDto(user.Name, token);
+            return new AuthResponseDto(new UserDto(user.Id, user.Name), token);
         }
     }
 }
