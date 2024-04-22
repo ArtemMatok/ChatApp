@@ -5,6 +5,7 @@ using TestChat.Server;
 using TestChat.Server.Data;
 using TestChat.Server.Hubs;
 using TestChat.Server.Repositories.AccountRepositoryFolder;
+using TestChat.Server.Repositories.UserRepositoryFold;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,8 +45,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddSignalR(); 
-
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

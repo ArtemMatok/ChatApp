@@ -1,0 +1,23 @@
+﻿<h3>Chat</h3>
+<ul class="list-group list-group-flush">
+    @foreach (var item in Users)
+    {
+        <li class="list-group-item" @onclick="()=>HandleUserClick(item)">@item.Name</li>
+    }
+</ul>
+
+
+@code {
+    [Parameter]
+    public IEnumerable<UserDto> Users { get; set; } = Enumerable.Empty<UserDto>();
+
+
+    [Parameter]
+    public EventCallback<UserDto> OnUserSelected { get; set; }
+
+    private async Task HandleUserClick(UserDto user)
+    {
+        OnUserSelected.InvokeAsync(user);
+
+    }
+}

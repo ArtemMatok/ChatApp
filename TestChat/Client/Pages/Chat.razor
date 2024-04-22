@@ -4,7 +4,7 @@
 @using TestChat.Shared.Chat 
 @inject IJSRuntime JsRuntime
 
-<div class="container">
+<div class="container-fluid">
     <div class="card br-0 mt-5" >
         <div class="card-header bg-danger text-white">
             <div class="row">
@@ -17,14 +17,18 @@
         </div>
         <div class="card-body messages-window">
             <div class="row">
-                <div class="col-3">
+                <div class="col-sm-2 col-3">
                     @*User*@
-                    <UserListComponent  Users="Users" OnUserSelected="OnUserSelected"/>
-                    
-                 </div>
-                <div class="col-9">
+                    <ChatsList Users="Users" OnUserSelected="OnUserSelected" />
+                </div>
+                <div class="col-sm-8 col-6">
                     @*Chat Message Window*@
-                   <ChatMessages SelectedUser="_selectedUser"/>
+                    <ChatDetail SelectedUser="_selectedUser" />
+                    
+                </div>
+                <div class="col-sm-2 col-3">
+                    @*User*@
+                    <UserListComponent  OnUserSelected="OnUserSelected" />
                 </div>
             </div>
         </div>

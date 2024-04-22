@@ -1,19 +1,62 @@
-﻿
+﻿@inject HttpClient _httpClient
+@using System.Net.Http.Headers 
+
+<h3>Users</h3>
 <ul class="list-group list-group-flush">
-    @foreach (var item in Users)
+    @if (_loading)
     {
-        <li class="list-group-item" @onclick="()=>HandleUserClick(item)">@item.Name</li>
+        <li class="list-group-item">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
+        </li>
     }
+    else
+    {
+        @foreach (var item in Users)
+        {
+            <li class="list-group-item" @onclick="()=>HandleUserClick(item)">@item.Id - @item.Name</li>
+        }
+    }
+
 </ul>
 
 
 @code {
-    [Parameter]
-    public IEnumerable<UserDto> Users { get; set; } = Enumerable.Empty<UserDto>();
-
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthState { get; set; }
 
     [Parameter]
     public EventCallback<UserDto> OnUserSelected { get; set; }
+
+    private bool _loading = false;
+    private  IEnumerable<UserDto> Users { get; set; } = Enumerable.Empty<UserDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        if(!string.IsNullOrWhiteSpace(AuthState.Token))
+        {
+
+
+            try
+            {
+                _loading = true;
+
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthState.Token);
+
+
+                var userList = await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("/api/User/GetUsers", TestChat.Client.Helpers.JsonConverter.JsonSerializerOptions);
+                if (userList is not null)
+                {
+                    Users = userList;
+                }
+            }
+            finally
+            {
+                _loading = false;
+            }
+        }
+    }
+
 
     private async Task HandleUserClick(UserDto user)
     {
