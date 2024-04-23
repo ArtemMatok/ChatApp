@@ -4,6 +4,6 @@ namespace TestChat.Server.Repositories.UserRepositoryFold
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<UserDto>> GetUsers(int userId);
+        Task<ICollection<UserDto>> GetUsers(int userId);
     }
 }

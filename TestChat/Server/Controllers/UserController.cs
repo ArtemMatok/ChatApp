@@ -17,7 +17,7 @@ namespace TestChat.Server.Controllers
         }
 
         [HttpGet("GetUsers")]
-        public async Task<IEnumerable<UserDto>> GetUsers()
+        public async Task<ICollection<UserDto>> GetUsers()
         {
             return await _userRepository.GetUsers(UserId);
         }

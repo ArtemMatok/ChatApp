@@ -29,7 +29,8 @@ namespace TestChat.Server.Hubs
             if (!_connectedUsers.ContainsKey(user.Id))
             {
                 _connectedUsers.Add(user.Id,user);
-                await Clients.Others.UserConnected(user);
+
+                //await Clients.Others.UserConnected(user);
             }
         }
     }

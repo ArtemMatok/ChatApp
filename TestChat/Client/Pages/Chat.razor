@@ -3,6 +3,8 @@
 @implements IAsyncDisposable
 @using TestChat.Shared.Chat 
 @inject IJSRuntime JsRuntime
+@inject HttpClient _httpClient
+@using System.Net.Http.Headers
 
 <div class="container-fluid">
     <div class="card br-0 mt-5" >
@@ -19,7 +21,7 @@
             <div class="row">
                 <div class="col-sm-2 col-3">
                     @*User*@
-                    <ChatsList Users="Users" OnUserSelected="OnUserSelected" />
+                    <ChatsList  OnUserSelected="OnUserSelected" />
                 </div>
                 <div class="col-sm-8 col-6">
                     @*Chat Message Window*@
@@ -28,7 +30,7 @@
                 </div>
                 <div class="col-sm-2 col-3">
                     @*User*@
-                    <UserListComponent  OnUserSelected="OnUserSelected" />
+                    <UserListComponent Users="Users" Loading="_loadingUsers" OnUserSelected="OnUserSelected" />
                 </div>
             </div>
         </div>
@@ -39,11 +41,13 @@
 @code {
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
-    private HubConnection? _hubConnection;
     public ICollection<UserDto> Users { get; set; } = new HashSet<UserDto>();
+
+
+
+    private HubConnection? _hubConnection;
     private UserDto? _selectedUser = null;
-
-
+    private bool _loadingUsers = false;
 
 
     protected override async void OnInitialized()
@@ -55,15 +59,31 @@
         }
         else
         {
-
             _hubConnection = ConfigureHubConnection();
+
+            _loadingUsers = true;
+            var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Client.Helpers.JsonConverter.JsonSerializerOptions);
 
 
             await _hubConnection.StartAsync();
             await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.ConnectUser), AuthState.User);
+
+            var userList = await userListTask;
+            if(userList is not null)
+            {
+                Users = userList;
+            }
+            _loadingUsers = false;
         }
 
 
+    }
+
+
+    private HttpClient GetClient()
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthState.Token);
+        return _httpClient;
     }
 
     private HubConnection ConfigureHubConnection()
@@ -73,16 +93,18 @@
             options=>options.AccessTokenProvider = ()=>Task.FromResult(AuthState.Token))
             .Build();
 
-        hubConnection.On<UserDto>(nameof(IBlazingChatHubClient.UserConnected), (userName) =>
+        
+
+        hubConnection.On<UserDto>(nameof(IBlazingChatHubClient.UserConnected), (newUser) =>
         {
-            Users.Add(userName);
+            Users.Add(newUser);
             StateHasChanged();
         });
 
 
         hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.ConnectedUsersList), (userNames) =>
         {
-            Users = userNames;
+            //Users = userNames;
             StateHasChanged();
         });
 

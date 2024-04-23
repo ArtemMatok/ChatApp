@@ -17,7 +17,7 @@ namespace TestChat.Server.Repositories.UserRepositoryFold
             _context = context;
         }
 
-        public async Task<IEnumerable<UserDto>> GetUsers(int userId)
+        public async Task<ICollection<UserDto>> GetUsers(int userId)
         {
             return await _context.Users.AsNoTracking()
                 .Where(x=>x.Id != userId)

@@ -3,7 +3,7 @@
 
 <h3>Users</h3>
 <ul class="list-group list-group-flush">
-    @if (_loading)
+    @if (Loading)
     {
         <li class="list-group-item">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -22,40 +22,17 @@
 
 
 @code {
-    [CascadingParameter(Name = "AuthenticationState")]
-    public AuthenticationState AuthState { get; set; }
 
     [Parameter]
     public EventCallback<UserDto> OnUserSelected { get; set; }
 
-    private bool _loading = false;
-    private  IEnumerable<UserDto> Users { get; set; } = Enumerable.Empty<UserDto>();
+    [Parameter]
+    public bool Loading { get; set; }
 
-    protected async override Task OnInitializedAsync()
-    {
-        if(!string.IsNullOrWhiteSpace(AuthState.Token))
-        {
+    [Parameter]
+    public ICollection<UserDto> Users { get; set; } = default;
 
 
-            try
-            {
-                _loading = true;
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthState.Token);
-
-
-                var userList = await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("/api/User/GetUsers", TestChat.Client.Helpers.JsonConverter.JsonSerializerOptions);
-                if (userList is not null)
-                {
-                    Users = userList;
-                }
-            }
-            finally
-            {
-                _loading = false;
-            }
-        }
-    }
 
 
     private async Task HandleUserClick(UserDto user)
