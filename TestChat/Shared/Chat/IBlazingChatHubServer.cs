@@ -9,6 +9,6 @@ namespace TestChat.Shared.Chat
 {
     public interface IBlazingChatHubServer
     {
-        Task ConnectUser(UserDto user);
+        Task SetUserOnline(UserDto user);
     }
 }

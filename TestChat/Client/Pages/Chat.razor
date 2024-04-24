@@ -66,7 +66,6 @@
 
 
             await _hubConnection.StartAsync();
-            await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.ConnectUser), AuthState.User);
 
             var userList = await userListTask;
             if(userList is not null)
@@ -74,6 +73,8 @@
                 Users = userList;
             }
             _loadingUsers = false;
+            await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.SetUserOnline), AuthState.User);
+            StateHasChanged();
         }
 
 
@@ -93,7 +94,7 @@
             options=>options.AccessTokenProvider = ()=>Task.FromResult(AuthState.Token))
             .Build();
 
-        
+
 
         hubConnection.On<UserDto>(nameof(IBlazingChatHubClient.UserConnected), (newUser) =>
         {
@@ -102,10 +103,26 @@
         });
 
 
-        hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.ConnectedUsersList), (userNames) =>
+        hubConnection.On<ICollection<UserDto>>(nameof(IBlazingChatHubClient.OnlineUsersList), (onlineUsers) =>
         {
-            //Users = userNames;
+            foreach (var item in Users)
+            {
+                if(onlineUsers.Any(x=>x.Id == item.Id))
+                {
+                    item.IsOnline = true;
+                }
+            }
             StateHasChanged();
+        });
+
+        hubConnection.On<int>(nameof(IBlazingChatHubClient.UserIsOnline), (userId) =>
+        {
+            var user = Users.FirstOrDefault(x => x.Id == userId);
+            if(user is not null)
+            {
+                user.IsOnline = true;
+                StateHasChanged();
+            }
         });
 
 

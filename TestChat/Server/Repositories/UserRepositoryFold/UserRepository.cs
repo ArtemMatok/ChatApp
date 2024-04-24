@@ -21,7 +21,7 @@ namespace TestChat.Server.Repositories.UserRepositoryFold
         {
             return await _context.Users.AsNoTracking()
                 .Where(x=>x.Id != userId)
-                .Select(x => new UserDto(x.Id, x.Name))
+                .Select(x => new UserDto(x.Id, x.Name,false))
                 .ToListAsync();
         }
     }
