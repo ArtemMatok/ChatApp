@@ -24,9 +24,9 @@
                     <ChatsList Chats="Chats" OnUserSelected="OnUserSelected" />
                 </div>
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
-                <div class="col-sm-8 col-6 d-flex" style="background-color: #f4ecff; height:70vh;">
+                <div class="col-sm-8 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
 
-                    <ChatDetail SelectedUser="_selectedUser" />
+                    <ChatDetail SelectedUser="_selectedUser" OnCancel="HandleChatDetailsCancel"  />
 
                 </div>
                 <div class="col-sm-2 col-3">
@@ -170,5 +170,15 @@
         await JsRuntime.InvokeVoidAsync("window.removeFromStorage", AuthenticationState.AuthStoreKey);
         AuthState.UnloadState();
         _navManager.NavigateTo("/");
+    }
+
+
+    private async Task HandleChatDetailsCancel(bool shouldRemoveFromChatList)
+    {
+        if(shouldRemoveFromChatList)
+        {
+            Chats.Remove(_selectedUser);
+            _selectedUser = null;
+        }
     }
 }
