@@ -19,17 +19,17 @@
         </div>
         <div class="card-body messages-window">
             <div class="row" style="flex: 1">
-                <div class="col-sm-2 col-3">
+                <div class="col-sm-3 col-3">
 
                     <ChatsList Chats="Chats" OnUserSelected="OnUserSelected" />
                 </div>
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
-                <div class="col-sm-8 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
+                <div class="col-sm-6 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
 
                     <ChatDetail SelectedUser="_selectedUser" OnCancel="HandleChatDetailsCancel"  />
 
                 </div>
-                <div class="col-sm-2 col-3">
+                <div class="col-sm-3 col-3">
                     User
                     <UserListComponent Users="Users" Loading="_loadingUsers" OnUserSelected="OnUserSelected" />
                 </div>
