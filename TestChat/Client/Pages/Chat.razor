@@ -18,21 +18,23 @@
             </div>
         </div>
         <div class="card-body messages-window">
-            <div class="row">
+            <div class="row" style="flex: 1">
                 <div class="col-sm-2 col-3">
-                    @*User*@
-                    <ChatsList  OnUserSelected="OnUserSelected" />
+
+                    <ChatsList Chats="Chats" OnUserSelected="OnUserSelected" />
                 </div>
-                <div class="col-sm-8 col-6">
-                    @*Chat Message Window*@
+                @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
+                <div class="col-sm-8 col-6 d-flex" style="background-color: #f4ecff; height:70vh;">
+
                     <ChatDetail SelectedUser="_selectedUser" />
-                    
+
                 </div>
                 <div class="col-sm-2 col-3">
-                    @*User*@
+                    User
                     <UserListComponent Users="Users" Loading="_loadingUsers" OnUserSelected="OnUserSelected" />
                 </div>
             </div>
+           
         </div>
     </div>
 </div>
@@ -42,6 +44,7 @@
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
     public ICollection<UserDto> Users { get; set; } = new HashSet<UserDto>();
+    public ICollection<UserDto> Chats { get; set; } = new HashSet<UserDto>();
 
 
 
@@ -138,7 +141,29 @@
     }
 
 
-    private async Task OnUserSelected(UserDto user) => _selectedUser = user;
+    private async Task OnUserSelected(UserDto user)
+    {
+        _selectedUser = user;
+
+        var selectedChatUser = Chats.FirstOrDefault(x => x.IsSelected);
+        if(selectedChatUser is not null)
+        {
+            selectedChatUser.IsSelected = false;
+        }
+
+        var chatUser = Chats.FirstOrDefault(x => x.Id == user.Id);
+        if(chatUser is null)
+        {
+            user.IsSelected = true;
+            Chats.Add(user);
+        }
+        else
+        {
+            chatUser.IsSelected = true;
+        }
+
+
+    }
 
     private async Task HandleLogout()
     {

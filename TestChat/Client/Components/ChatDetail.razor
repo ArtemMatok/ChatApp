@@ -4,9 +4,17 @@
 }
 else
 {
-<h2>@SelectedUser.Name</h2>
-}
+    <div class="flex-grow-1">
+        <div class="header d-flex justify-content-between bg-main" >
+            <h2 class="">@SelectedUser.Name</h2>
+            <button class="btn btn-danger btn-sm">x</button>
+        </div>
+        <div class="messages-list">
 
+        </div>
+        <div class="message-input"></div>
+    </div>
+}
 
 @code {
     [Parameter]

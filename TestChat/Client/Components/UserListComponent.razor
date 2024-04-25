@@ -40,7 +40,7 @@
 
     private async Task HandleUserClick(UserDto user)
     {
-        OnUserSelected.InvokeAsync(user);
+        await OnUserSelected.InvokeAsync(user);
 
     }
 }
