@@ -4,6 +4,7 @@ using TestChat.Shared.DTOs;
 using System.Net.Http.Headers;
 using TestChat.Client.States;
 
+
 namespace TestChat.Client.Services.UserServ
 {
     public class UserService : IUserService
@@ -19,7 +20,7 @@ namespace TestChat.Client.Services.UserServ
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authState.Token);
 
-            return await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("/api/User/GetUsers", TestChat.Client.Helpers.JsonConverter.JsonSerializerOptions);
+            return await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
         }
     }
 }

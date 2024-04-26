@@ -28,7 +28,7 @@
         var authStateJson =  await JsRuntime.InvokeAsync<string>("window.getFromStorage", AuthenticationState.AuthStoreKey);
         if(!string.IsNullOrWhiteSpace(authStateJson))
         {
-            var authState = TestChat.Client.Helpers.JsonConverter.Deserialize<AuthResponseDto>(authStateJson);
+            var authState = JsonConverter.Deserialize<AuthResponseDto>(authStateJson);
             AuthenticationState.LoadState(authState);
 
             if(AuthenticationState.IsAuthenticated)

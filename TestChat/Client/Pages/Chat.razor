@@ -6,6 +6,8 @@
 @inject HttpClient _httpClient
 @using System.Net.Http.Headers
 
+
+
 <div class="container-fluid">
     <div class="card br-0 mt-5" >
         <div class="card-header bg-danger text-white">
@@ -26,7 +28,7 @@
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
                 <div class="col-sm-6 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
 
-                    <ChatDetail SelectedUser="_selectedUser" OnCancel="HandleChatDetailsCancel"  />
+                    <ChatDetail NewIncomingMessage="@_newIncomingMessage"  SelectedUser="_selectedUser" OnCancel="HandleChatDetailsCancel"  />
 
                 </div>
                 <div class="col-sm-3 col-3">
@@ -51,7 +53,7 @@
     private HubConnection? _hubConnection;
     private UserDto? _selectedUser = null;
     private bool _loadingUsers = false;
-
+    private string? _newIncomingMessage = null;
 
     protected override async void OnInitialized()
     {
@@ -65,7 +67,7 @@
             _hubConnection = ConfigureHubConnection();
 
             _loadingUsers = true;
-            var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Client.Helpers.JsonConverter.JsonSerializerOptions);
+            var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
 
 
             await _hubConnection.StartAsync();
@@ -128,6 +130,24 @@
             }
         });
 
+
+        hubConnection.On<int, string>(nameof(IBlazingChatHubClient.MessageReceived), (fromUserId,  message) =>
+        {
+            var fromUser = Users.FirstOrDefault(x => x.Id == fromUserId);
+            if(!Chats.Any(x=>x.Id == fromUserId))
+            {
+                Chats.Prepend(fromUser);
+            }
+            else
+            {
+                if(_selectedUser.Id == fromUserId)
+                {
+                    // Append the message to the messages list
+                    _newIncomingMessage = message;
+                }    
+            }
+            StateHasChanged();
+        });
 
         return hubConnection;
     }

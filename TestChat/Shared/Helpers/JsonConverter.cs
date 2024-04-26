@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace TestChat.Client.Helpers
+namespace TestChat.Shared.Helpers
 {
     public static class JsonConverter
     {

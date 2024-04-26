@@ -70,9 +70,9 @@
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var authResult = TestChat.Client.Helpers.JsonConverter.Deserialize<AuthResponseDto>(content);
+                var authResult =JsonConverter.Deserialize<AuthResponseDto>(content);
 
-                var serialized = TestChat.Client.Helpers.JsonConverter.Serialize(authResult);
+                var serialized = JsonConverter.Serialize(authResult);
                 await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
                 //_navManager.NavigateTo("/chat");
                 AuthenticationState.LoadState(authResult);

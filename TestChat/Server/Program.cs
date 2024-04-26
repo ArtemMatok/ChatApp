@@ -5,6 +5,7 @@ using TestChat.Server;
 using TestChat.Server.Data;
 using TestChat.Server.Hubs;
 using TestChat.Server.Repositories.AccountRepositoryFolder;
+using TestChat.Server.Repositories.MessageRepositoryFold;
 using TestChat.Server.Repositories.UserRepositoryFold;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +48,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>
 
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
