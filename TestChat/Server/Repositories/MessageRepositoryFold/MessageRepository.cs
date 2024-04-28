@@ -1,4 +1,5 @@
-﻿using TestChat.Server.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TestChat.Server.Data;
 using TestChat.Server.Data.Entities;
 using TestChat.Shared.DTOs;
 
@@ -11,6 +12,16 @@ namespace TestChat.Server.Repositories.MessageRepositoryFold
         public MessageRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<MessageDto>> GetMessages(int otherUserId, int userId)
+        {
+            var messages = await _context.Messages.AsNoTracking()
+                .Where(x => (x.FromId == otherUserId && x.ToId == userId)
+                ||(x.ToId==otherUserId && x.FromId == userId))
+                .Select(x=> new MessageDto(x.ToId, x.FromId, x.Content))
+                .ToListAsync();
+            return messages;
         }
 
         public async Task<bool> SendMessage(MessageSendDto messageDto,int userId)
@@ -38,5 +49,7 @@ namespace TestChat.Server.Repositories.MessageRepositoryFold
                 return false;
             }
         }
+
+        
     }
 }

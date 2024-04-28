@@ -14,6 +14,11 @@ namespace TestChat.Client.Services.MessageServiceFold
             _httpClient = httpClient;
         }
 
+        public async Task<IEnumerable<MessageDto>> GetMessages(int otherUserId)
+        {
+            return await _httpClient.GetFromJsonAsync<IEnumerable<MessageDto>>($"/api/Message/GetMessages/{otherUserId}");
+        }
+
         public async Task<bool> SendMessage(MessageSendDto messageDto, AuthenticationState authState)
         {
             var result = await _httpClient.PostAsJsonAsync("/api/Message/SendMessage", messageDto, TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);

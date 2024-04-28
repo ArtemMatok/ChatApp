@@ -6,5 +6,6 @@ namespace TestChat.Client.Services.MessageServiceFold
     public interface IMessageService
     {
         Task<bool> SendMessage(MessageSendDto messageDto, AuthenticationState authState);
+        Task<IEnumerable<MessageDto>> GetMessages(int otherUserId);
     }
 }

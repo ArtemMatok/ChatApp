@@ -28,7 +28,10 @@
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
                 <div class="col-sm-6 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
 
-                    <ChatDetail NewIncomingMessage="@_newIncomingMessage"  SelectedUser="_selectedUser" OnCancel="HandleChatDetailsCancel"  />
+                    <ChatDetail NewIncomingMessage="@_newIncomingMessage"
+                                OnIncomingMessageReceived="()=>_newIncomingMessage = null"
+                                SelectedUser="_selectedUser" 
+                                OnCancel="HandleChatDetailsCancel"  />
 
                 </div>
                 <div class="col-sm-3 col-3">
@@ -53,7 +56,7 @@
     private HubConnection? _hubConnection;
     private UserDto? _selectedUser = null;
     private bool _loadingUsers = false;
-    private string? _newIncomingMessage = null;
+    private MessageDto? _newIncomingMessage = null;
 
     protected override async void OnInitialized()
     {
@@ -142,9 +145,10 @@
             {
                 if(_selectedUser.Id == fromUserId)
                 {
+                  
                     // Append the message to the messages list
-                    _newIncomingMessage = message;
-                }    
+                    _newIncomingMessage = new MessageDto(_selectedUser.Id, fromUserId, message);
+                }
             }
             StateHasChanged();
         });

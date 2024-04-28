@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using TestChat.Server.Data.Entities;
 using TestChat.Server.Hubs;
 using TestChat.Server.Repositories.MessageRepositoryFold;
 using TestChat.Shared.Chat;
@@ -38,6 +39,12 @@ namespace TestChat.Server.Controllers
             {
                 return StatusCode(500, "Unable to send message");
             }
+        }
+
+        [HttpGet("GetMessages/{otherUserId:int}")]
+        public async Task<IEnumerable<MessageDto>> GetMessages(int otherUserId)
+        {
+            return await _messageRepository.GetMessages(otherUserId, UserId);
         }
     }
 }

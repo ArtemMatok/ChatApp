@@ -46,28 +46,55 @@ else
 }
 
 @code {
-    [CascadingParameter(Name = "AuthenticationState")]
-    public AuthenticationState AuthState { get; set; }
+        [CascadingParameter(Name = "AuthenticationState")]
+        public AuthenticationState AuthState { get; set; }
 
     [Parameter]
     public UserDto? SelectedUser { get; set; }
     [Parameter]
     public EventCallback<bool> OnCancel { get; set; }
     [Parameter]
-    public string? NewIncomingMessage { get; set; }
+    public MessageDto? NewIncomingMessage { get; set; }
+    [Parameter]
+    public EventCallback OnIncomingMessageReceived { get; set; }
 
 
-    private IList<string> _messages = new List<string>();
+    private IList<MessageDto> _messages = new List<MessageDto>();
     private string _newMessage = "";
     private string? _errorMessage = "";
+    private int _previousSelectedUserId = 0;
 
-    protected override void OnParametersSet()
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (!string.IsNullOrWhiteSpace(NewIncomingMessage))
+        if (NewIncomingMessage is not null)
         {
             _messages.Add(NewIncomingMessage);
-            NewIncomingMessage = null;
+            await OnIncomingMessageReceived.InvokeAsync();
         }
+        if (SelectedUser is not null && SelectedUser.Id != _previousSelectedUserId)
+        {
+            _previousSelectedUserId = SelectedUser.Id;
+            await LoadMessagesAsync();
+        }
+    }
+
+
+
+    private async Task LoadMessagesAsync()
+    {
+        _messages.Clear();
+        var allMessages = await _messageService.GetMessages(SelectedUser.Id);
+        if (allMessages?.Any() == true)
+        {
+            _messages = allMessages.ToList();
+            _errorMessage = null;
+        }
+        else
+        {
+            _errorMessage = $"There are not messages between you and {SelectedUser.Name}";
+        }
+
     }
 
 
@@ -88,7 +115,11 @@ else
                 var response = await _messageService.SendMessage(sendMessageDto, AuthState);
                 if(response)
                 {
+                    var messageDto = new MessageDto(SelectedUser.Id, AuthState.User.Id, _newMessage);
+                    _messages.Add(messageDto);
                     _newMessage = "";
+                    _errorMessage = null;
+
                 }
                 else
                 {
