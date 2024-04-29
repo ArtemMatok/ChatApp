@@ -5,6 +5,7 @@
 @inject IJSRuntime JsRuntime
 @inject HttpClient _httpClient
 @using System.Net.Http.Headers
+@inject IUserService _userService
 
 
 
@@ -23,7 +24,7 @@
             <div class="row" style="flex: 1">
                 <div class="col-sm-3 col-3">
 
-                    <ChatsList Chats="Chats" OnUserSelected="OnUserSelected" />
+                    <ChatsList Loading="_loadingUsers" Chats="Chats" OnUserSelected="OnUserSelected" />
                 </div>
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
                 <div class="col-sm-6 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
@@ -49,7 +50,7 @@
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
     public ICollection<UserDto> Users { get; set; } = new HashSet<UserDto>();
-    public ICollection<UserDto> Chats { get; set; } = new HashSet<UserDto>();
+    public IList<UserDto> Chats { get; set; } = new List<UserDto>();
 
 
 
@@ -71,6 +72,7 @@
 
             _loadingUsers = true;
             var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
+            var chatListTask = await _userService.GetUsersChats();
 
 
             await _hubConnection.StartAsync();
@@ -79,6 +81,12 @@
             if(userList is not null)
             {
                 Users = userList;
+            }
+
+            var chatsList = chatListTask;
+            if (chatsList is not null)
+            {
+                Chats = chatsList;
             }
             _loadingUsers = false;
             await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.SetUserOnline), AuthState.User);
@@ -139,13 +147,14 @@
             var fromUser = Users.FirstOrDefault(x => x.Id == fromUserId);
             if(!Chats.Any(x=>x.Id == fromUserId))
             {
-                Chats.Prepend(fromUser);
+                Chats.Insert(0, fromUser);
+                //Chats.Prepend(fromUser);
             }
             else
             {
                 if(_selectedUser.Id == fromUserId)
                 {
-                  
+
                     // Append the message to the messages list
                     _newIncomingMessage = new MessageDto(_selectedUser.Id, fromUserId, message);
                 }

@@ -22,5 +22,10 @@ namespace TestChat.Client.Services.UserServ
 
             return await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
         }
+
+        public async Task<IList<UserDto>> GetUsersChats()
+        {
+            return await _httpClient.GetFromJsonAsync<List<UserDto>>("/api/User/Chats", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
+        }
     }
 }

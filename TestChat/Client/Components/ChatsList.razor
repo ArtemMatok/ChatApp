@@ -1,15 +1,29 @@
 ﻿<h3>Chat</h3>
 <ul class="list-group list-group-flush">
-    @foreach (var item in Chats)
+    @if (Loading)
     {
-        <li class="list-group-item @(item.IsSelected? "bg-success text-white" :"")" @onclick="()=>HandleUserClick(item)">@item.Name</li>
+        <li class="list-group-item">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
+        </li>
     }
+    else
+    {
+        @foreach (var item in Chats)
+        {
+            <li class="list-group-item @(item.IsSelected? "bg-success text-white" :"")" @onclick="()=>HandleUserClick(item)">@item.Name</li>
+        }
+    }
+
 </ul>
 
 
 @code {
     [Parameter]
     public ICollection<UserDto> Chats { get; set; } = new List<UserDto>();
+
+    [Parameter]
+    public bool Loading { get; set; }
 
 
     [Parameter]

@@ -6,5 +6,6 @@ namespace TestChat.Client.Services.UserServ
     public interface IUserService
     {
         Task<IEnumerable<UserDto>> GetUsers(AuthenticationState authState);
+        Task<IList<UserDto>> GetUsersChats();
     }
 }
