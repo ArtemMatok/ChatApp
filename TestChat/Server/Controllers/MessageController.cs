@@ -29,10 +29,10 @@ namespace TestChat.Server.Controllers
         public async Task <IActionResult> SendMessage(MessageSendDto messageDto)
         {
             var result = await _messageRepository.SendMessage(messageDto, UserId);
-            if(result)
+            if(result is not null)
             {
 
-                await _hubContext.Clients.User(messageDto.ToUserId.ToString()).MessageReceived(base.UserId, messageDto.Message);
+                await _hubContext.Clients.User(messageDto.ToUserId.ToString()).MessageReceived(result);
                 return Ok();
             }
             else

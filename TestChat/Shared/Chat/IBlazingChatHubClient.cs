@@ -12,6 +12,6 @@ namespace TestChat.Shared.Chat
         Task UserConnected(UserDto user);
         Task OnlineUsersList(IEnumerable<UserDto> users);
         Task UserIsOnline(int userId);
-        Task MessageReceived(int fromUserId, string message);
+        Task MessageReceived(MessageDto messageDto);
     }
 }

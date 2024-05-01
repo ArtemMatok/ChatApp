@@ -5,7 +5,7 @@ namespace TestChat.Server.Repositories.MessageRepositoryFold
 {
     public interface IMessageRepository
     {
-        Task<bool> SendMessage(MessageSendDto messageDto, int userId);
+        Task<MessageDto> SendMessage(MessageSendDto messageDto, int userId);
         Task<IEnumerable<MessageDto>> GetMessages(int otherUserId, int userId);
     }
 }

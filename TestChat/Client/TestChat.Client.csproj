@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\ChatDetail.razor.css" />
     <None Remove="Pages\Chat.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Components\ChatDetail.razor.css" />
     <Content Include="Pages\Chat.razor.css" />
   </ItemGroup>
 

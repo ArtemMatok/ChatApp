@@ -27,7 +27,7 @@
                     <ChatsList Loading="_loadingUsers" Chats="Chats" OnUserSelected="OnUserSelected" />
                 </div>
                 @*<div class="col-sm-8 col-6 d-flex justify-content-center align-items-center" style="background-color: #f4ecff; height:70vh;">*@
-                <div class="col-sm-6 col-6 d-flex px-0" style="background-color: #f4ecff; height:70vh;">
+                <div class="col-sm-6 col-6 d-flex px-0" style="height:70vh;">
 
                     <ChatDetail NewIncomingMessage="@_newIncomingMessage"
                                 OnIncomingMessageReceived="()=>_newIncomingMessage = null"
@@ -142,21 +142,21 @@
         });
 
 
-        hubConnection.On<int, string>(nameof(IBlazingChatHubClient.MessageReceived), (fromUserId,  message) =>
+        hubConnection.On<MessageDto>(nameof(IBlazingChatHubClient.MessageReceived), (messageDto) =>
         {
-            var fromUser = Users.FirstOrDefault(x => x.Id == fromUserId);
-            if(!Chats.Any(x=>x.Id == fromUserId))
+            var fromUser = Users.FirstOrDefault(x => x.Id == messageDto.FromUserId);
+            if(!Chats.Any(x=>x.Id == messageDto.FromUserId))
             {
                 Chats.Insert(0, fromUser);
                 //Chats.Prepend(fromUser);
             }
             else
             {
-                if(_selectedUser.Id == fromUserId)
+                if(_selectedUser.Id == messageDto.FromUserId)
                 {
 
                     // Append the message to the messages list
-                    _newIncomingMessage = new MessageDto(_selectedUser.Id, fromUserId, message);
+                    _newIncomingMessage = messageDto;
                 }
             }
             StateHasChanged();

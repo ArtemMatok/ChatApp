@@ -19,15 +19,15 @@ namespace TestChat.Server.Repositories.MessageRepositoryFold
             var messages = await _context.Messages.AsNoTracking()
                 .Where(x => (x.FromId == otherUserId && x.ToId == userId)
                 ||(x.ToId==otherUserId && x.FromId == userId))
-                .Select(x=> new MessageDto(x.ToId, x.FromId, x.Content))
+                .Select(x=> new MessageDto(x.ToId, x.FromId, x.Content,x.SentOn))
                 .ToListAsync();
             return messages;
         }
 
-        public async Task<bool> SendMessage(MessageSendDto messageDto,int userId)
+        public async Task<MessageDto> SendMessage(MessageSendDto messageDto,int userId)
         {
             if (messageDto.ToUserId <= 0 || string.IsNullOrWhiteSpace(messageDto.Message))
-                return false;
+                return null;
             var message = new Message()
             {
                 FromId = userId,
@@ -42,11 +42,12 @@ namespace TestChat.Server.Repositories.MessageRepositoryFold
 
             if(result >0)
             {
-                return true;
+                var responseMessageDto = new MessageDto(message.ToId, message.FromId, message.Content,message.SentOn);
+                return responseMessageDto;
             }
             else
             {
-                return false;
+                return null;
             }
         }
 
