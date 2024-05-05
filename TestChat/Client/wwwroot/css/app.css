@@ -115,7 +115,7 @@ a, .btn-link {
 }
 
 .messages-window{
-    height:calc(100vh - 150px);
+    height:calc(100vh - 75px);
 }
 
 .topbar-name{

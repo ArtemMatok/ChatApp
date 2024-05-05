@@ -6,21 +6,20 @@
 @inject HttpClient _httpClient
 @using System.Net.Http.Headers
 @inject IUserService _userService
-
+@using System.IdentityModel.Tokens.Jwt 
 
 
 <div class="container-fluid">
-    <div class="card br-0 mt-5" >
+    <div class="card br-0 mt-1" >
         <div class="card-header bg-danger text-white">
             <div class="row">
                 <div class="col"></div>
                 <div class="col">
                     <button type="submit" class="btn btn-warning float-end" @onclick="HandleLogout">Logout</button>
-                    <label class="float-end me-2 mt-2">Welcome @AuthState.User.Name</label>
-                </div>
+                    <label class="float-end me-2 mt-2 topbar-name">Welcome @AuthState?.User?.Name</label>                </div>
             </div>
         </div>
-        <div class="card-body messages-window">
+        <div class="card-body messages-window bg-light d-flex">
             <div class="row" style="flex: 1">
                 <div class="col-sm-3 col-3">
 
@@ -59,8 +58,25 @@
     private bool _loadingUsers = false;
     private MessageDto? _newIncomingMessage = null;
 
+    private async Task<bool> IsTokenExpired()
+    {
+        var jwt = new JwtSecurityToken(AuthState.Token); ;
+        if (jwt.ValidTo <= DateTime.Now)
+        {
+            //Token has expired
+            //Navigate to login page
+
+            await HandleLogout();
+            return true;
+        }
+        return false;
+    }
+
+
     protected override async void OnInitialized()
     {
+
+
         base.OnInitialized();
         if (!AuthState.IsAuthenticated)
         {
@@ -68,29 +84,34 @@
         }
         else
         {
-            _hubConnection = ConfigureHubConnection();
-
-            _loadingUsers = true;
-            var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
-            var chatListTask = await _userService.GetUsersChats();
-
-
-            await _hubConnection.StartAsync();
-
-            var userList = await userListTask;
-            if(userList is not null)
+            if(!await IsTokenExpired())
             {
-                Users = userList;
+                _hubConnection = ConfigureHubConnection();
+
+                _loadingUsers = true;
+                var userListTask = GetClient().GetFromJsonAsync<ICollection<UserDto>>("/api/User/GetUsers", TestChat.Shared.Helpers.JsonConverter.JsonSerializerOptions);
+                var chatListTask = await _userService.GetUsersChats();
+
+
+                await _hubConnection.StartAsync();
+
+                var userList = await userListTask;
+                if (userList is not null)
+                {
+                    Users = userList;
+                }
+
+                var chatsList = chatListTask;
+                if (chatsList is not null)
+                {
+                    Chats = chatsList;
+                }
+                _loadingUsers = false;
+                await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.SetUserOnline), AuthState.User);
+                StateHasChanged();
             }
 
-            var chatsList = chatListTask;
-            if (chatsList is not null)
-            {
-                Chats = chatsList;
-            }
-            _loadingUsers = false;
-            await _hubConnection.SendAsync(nameof(IBlazingChatHubServer.SetUserOnline), AuthState.User);
-            StateHasChanged();
+
         }
 
 
@@ -145,7 +166,7 @@
         hubConnection.On<MessageDto>(nameof(IBlazingChatHubClient.MessageReceived), (messageDto) =>
         {
             var fromUser = Users.FirstOrDefault(x => x.Id == messageDto.FromUserId);
-            if(!Chats.Any(x=>x.Id == messageDto.FromUserId))
+            if (!Chats.Any(x=>x.Id == messageDto.FromUserId))
             {
                 Chats.Insert(0, fromUser);
                 //Chats.Prepend(fromUser);
@@ -154,7 +175,15 @@
             {
                 if(_selectedUser.Id == messageDto.FromUserId)
                 {
-
+                    int index = Chats.IndexOf(_selectedUser);
+                    if (index != -1) // Якщо елемент знайдено
+                    {
+                        // Видалити елемент зі списку
+                        Chats.RemoveAt(index);
+                        // Вставити елемент на початок списку
+                        Chats.Insert(0, _selectedUser);
+                    }
+                    
                     // Append the message to the messages list
                     _newIncomingMessage = messageDto;
                 }

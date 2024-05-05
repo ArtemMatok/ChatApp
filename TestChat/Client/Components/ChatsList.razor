@@ -11,7 +11,8 @@
     {
         @foreach (var item in Chats)
         {
-            <li class="list-group-item @(item.IsSelected? "bg-success text-white" :"")" @onclick="()=>HandleUserClick(item)">@item.Name</li>
+            <li class="list-group-item @(item.IsSelected? "bg-success text-white" :"")   "  @onclick="()=>HandleUserClick(item)">@item.Name</li>
+            
         }
     }
 

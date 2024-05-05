@@ -1,4 +1,6 @@
 ﻿@inject IMessageService _messageService
+@inject IJSRuntime _jsRuntime
+
 
 @if (SelectedUser is null)
 {
@@ -11,48 +13,63 @@ else
         <h4 class="text-white m-0 p-1">@SelectedUser.Name</h4>
         <button class="btn btn-danger btn-sm" @onclick="HandleCancelClick">x</button>
     </div>
-    @if (!string.IsNullOrWhiteSpace(_errorMessage))
-    {
-        <div class="header d-flex justify-content-between bg-danger">
-            <span class="text-white">@_errorMessage</span>
-            <button class="btn btn-danger btn-sm" @onclick="() => _errorMessage = null">x</button>
-        </div>
-    }
+ 
 
     <div class="messages-list">
-        <ul style="padding:5px;">
-            @foreach (var item in _messages)
-            {
-                var incoming = item.ToUserId == _currentUserId;
-                var outgoing = !incoming;
-                var cls = $"justify-content-{(incoming ? "start" : "end")}";
+       
 
-                <li class="d-flex @cls">
-                    <p class="single-msg @(incoming? "other": "me")">
-                        @item.Message
-                        <br />
-                        <small class="msg-dt">
-                            @if(item.SentOn.Date == DateTime.Today.Date)
-                            {
-                                <span>@item.SentOn.ToShortTimeString()</span>
-                            }
-                            else
-                            {
-                                var dateString = $"{item.SentOn.ToShortDateString()} | {item.SentOn.ToShortTimeString()}";
-                                <span>@dateString</span>
-                            }
-                        </small>
-                    </p>
-                </li>
-            }
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="header d-flex justify-content-between bg-danger">
+                <span class="text-white">@_errorMessage</span>
+                <button class="btn btn-danger btn-sm" @onclick="() => _errorMessage = null">x</button>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(_infoMessage))
+        {
+            <div class="header d-flex justify-content-between bg-warning">
+                <span class="text-white">@_infoMessage</span>
+            </div>
+        }
+    <ul id="message-ul" style="padding:5px;">
+        @if (_loadingMessages)
+        {
+            <li class="list-group-item">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading messages...
+            </li>
+        }
+        @foreach (var item in _messages)
+        {
+            var incoming = item.ToUserId == _currentUserId;
+            var outgoing = !incoming;
+            var cls = $"justify-content-{(incoming ? "start" : "end")}";
 
-        </ul>
+            <li class="d-flex @cls">
+                <p class="single-msg @(incoming? "other": "me")">
+                    @item.Message
+                    <br />
+                    <small class="msg-dt">
+                        @if (item.SentOn.Date == DateTime.Today.Date)
+                        {
+                            <span>@item.SentOn.ToShortTimeString()</span>
+                        }
+                        else
+                        {
+                            var dateString = $"{item.SentOn.ToShortDateString()} | {item.SentOn.ToShortTimeString()}";
+                            <span>@dateString</span>
+                        }
+                    </small>
+                </p>
+            </li>
+        }
+
+    </ul>
     </div>
     <div class="message-input">
-
         <EditForm Model="_newMessage" OnValidSubmit="HandleSendMessageSubmit">
             <div class="">
-                <div class="input-group d-flex justify-content-between ">
+                <div class="input-group d-flex justify-content-between">
                     <InputText class="form-control" @bind-Value="_newMessage" placeholder="Enter message here..." />
 
                     <button class="btn btn-success" type="submit">Send</button>
@@ -66,8 +83,8 @@ else
 }
 
 @code {
-        [CascadingParameter(Name = "AuthenticationState")]
-        public AuthenticationState AuthState { get; set; }
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthState { get; set; }
 
     [Parameter]
     public UserDto? SelectedUser { get; set; }
@@ -82,38 +99,70 @@ else
     private IList<MessageDto> _messages = new List<MessageDto>();
     private string _newMessage = "";
     private string? _errorMessage = "";
+    private string? _infoMessage = "";
     private int _previousSelectedUserId = 0;
     private int _currentUserId => AuthState?.User.Id ?? 0;
+    private bool _scrollToBottom = false;
+    private bool _loadingMessages = false;
+
+
+
 
     protected override async Task OnParametersSetAsync()
     {
+
+
         if (NewIncomingMessage is not null)
         {
             _messages.Add(NewIncomingMessage);
             await OnIncomingMessageReceived.InvokeAsync();
+            _scrollToBottom = true;
         }
         if (SelectedUser is not null && SelectedUser.Id != _previousSelectedUserId)
         {
             _previousSelectedUserId = SelectedUser.Id;
             await LoadMessagesAsync();
+            _scrollToBottom = true;
         }
     }
 
 
+    protected override async   Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(_scrollToBottom)
+        {
+            _scrollToBottom = false;
+            await _jsRuntime.InvokeVoidAsync("window.scrollToLastMessage");
+        }
+    }
+
 
     private async Task LoadMessagesAsync()
     {
-        _messages.Clear();
-        var allMessages = await _messageService.GetMessages(SelectedUser.Id);
-        if (allMessages?.Any() == true)
+        try
         {
-            _messages = allMessages.ToList();
-            _errorMessage = null;
+            _loadingMessages = true;
+            _messages.Clear();
+            var allMessages = await _messageService.GetMessages(SelectedUser.Id);
+            if (allMessages?.Any() == true)
+            {
+                _messages = allMessages.ToList();
+                _errorMessage = null;
+                _infoMessage = null;
+            }
+            else
+            {
+                _infoMessage = $"There are not messages between you and {SelectedUser.Name}";
+            }
         }
-        else
+        finally
         {
-            _errorMessage = $"There are not messages between you and {SelectedUser.Name}";
+            _loadingMessages = false;
+            
         }
+
+
+
 
     }
 
@@ -137,8 +186,11 @@ else
                 {
                     var messageDto = new MessageDto(SelectedUser.Id, AuthState.User.Id, _newMessage,DateTime.Now);
                     _messages.Add(messageDto);
+                    _scrollToBottom = true;
                     _newMessage = "";
                     _errorMessage = null;
+                    _infoMessage = null;
+
 
                 }
                 else

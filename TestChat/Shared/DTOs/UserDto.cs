@@ -7,6 +7,7 @@
             Id = id;
             Name = name;
             IsOnline = isOnline;
+            
         }
 
         public int Id { get; set; }

@@ -1,5 +1,5 @@
 ﻿.messages-list{
-    height:calc(100vh - 150px -115px);
+    height:calc(100vh - 75px - 115px);
     overflow-y:auto;
     background-color: #f4ecff; 
 }
@@ -28,3 +28,4 @@
     width:100%;
     text-align:right;
 }
+
