@@ -1,139 +1,112 @@
 ﻿@page "/"
-@using TestChat.Shared.DTOs 
-@inject IAccountService _accountService
-@inject NavigationManager _navManager
-@inject HttpClient _httpClient
-@inject  IJSRuntime JsRuntime 
-@using System.Text.Json
+@*@using TestChat.Shared.DTOs
+    @inject IAccountService _accountService
+    @inject NavigationManager _navManager
+    @inject HttpClient _httpClient
+    @inject  IJSRuntime JsRuntime
+    @using System.Text.Json
 
-<PageTitle>Blazing Chat</PageTitle>
+    <PageTitle>Blazing Chat</PageTitle>
 
-<div class="container">
-    <EditForm Model="LoginModel" OnValidSubmit="LoginAsync">
-        <div class="card text-center br-0">
-            <div class="card-header bg-main">
-                <h2 class="text-white">Blazing Chat - Login</h2>
-            </div>
-            <div class="card-body">
-
-                <DataAnnotationsValidator />
-                @if (!string.IsNullOrWhiteSpace(errorMessage))
-                {
-                    <p class="text-danger">@errorMessage</p>
-                }
-                <div class="mb-3">
-                    <InputText @bind-Value="LoginModel.UserName" DisplayName="UserName" class="form-control" placeholder="Username"></InputText>
-                    <ValidationMessage For="()=>LoginModel.UserName" />
+    <div class="container">
+        <EditForm Model="LoginModel" OnValidSubmit="LoginAsync">
+            <div class="card text-center br-0">
+                <div class="card-header bg-main">
+                    <h2 class="text-white">Blazing Chat - Login</h2>
                 </div>
-                <div class="mb-3">
-                    <InputText type="password" @bind-Value="LoginModel.Password" class="form-control" DisplayName="Password" placeholder="Password"></InputText>
-                    <ValidationMessage For="()=>LoginModel.Password" />
-                </div>
-                
-            </div>
-            <div class="card-footer text-muted">
-                <div class="mb-3">
+                <div class="card-body">
 
-                    @if(_isBusy)
+                    <DataAnnotationsValidator />
+                    @if (!string.IsNullOrWhiteSpace(errorMessage))
                     {
-                        <button class="btn btn-success" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="visually-hidden">Loading...</span>
-                        </button>
+                        <p class="text-danger">@errorMessage</p>
                     }
-                    else
-                    {
-                        <button type="submit" class="btn btn-success float-start" >Login</button>
-                    }
+                    <div class="mb-3">
+                        <InputText @bind-Value="LoginModel.UserName" DisplayName="UserName" class="form-control" placeholder="Username"></InputText>
+                        <ValidationMessage For="()=>LoginModel.UserName" />
+                    </div>
+                    <div class="mb-3">
+                        <InputText type="password" @bind-Value="LoginModel.Password" class="form-control" DisplayName="Password" placeholder="Password"></InputText>
+                        <ValidationMessage For="()=>LoginModel.Password" />
+                    </div>
 
-                    <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
-                    <div class="clearfix"></div>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="mb-3">
+
+                        @if(_isBusy)
+                        {
+                            <button class="btn btn-success" type="button" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success float-start" >Login</button>
+                        }
+
+                        <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
+                        <div class="clearfix"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </EditForm>
-</div>
-
-
-    @*<div class="row">
-        <div class="col"></div>
-        <div class="col">
-            <h2>Blazing Chat - Login</h2>
-            <EditForm Model="LoginModel" OnInvalidSubmit="LoginAsync">
-                <DataAnnotationsValidator />
-                @if(!string.IsNullOrWhiteSpace(errorMessage))
-                {
-                    <p class="text-danger">@errorMessage</p>
-                }
-                <div class="mb-3">
-                    <InputText @bind-Value="LoginModel.UserName" DisplayName="UserName" class="form-control" placeholder="Username"></InputText>
-                    <ValidationMessage For="()=>LoginModel.UserName" />
-                </div>
-                <div class="mb-3">
-                    <InputText type="password" @bind-Value="LoginModel.Password" class="form-control"  DisplayName="Password" placeholder="Password"></InputText>
-                    <ValidationMessage For="()=>LoginModel.Password" />
-                </div>
-                <div class="mb-3">
-                    <button @onclick="LoginAsync" class="btn btn-success" >Login</button>
-                    <NavLink href="register" class="btn btn-outline-primary float-end">Register</NavLink>
-                    <div class="clearfix"></div>
-                </div>
-            </EditForm>
-        </div>
-        <div class="col"></div>
+        </EditForm>
     </div>
-</div>*@
 
 
-@code{
-    [CascadingParameter(Name = "AuthenticationState")]
-    public AuthenticationState AuthenticationState { get; set; }
 
-    private LoginDto LoginModel { get; set; } = new();
-    private bool _isBusy = false;
-    private string? errorMessage = null;
-    private async Task LoginAsync()
-    {
-        try
+
+
+    @code{
+        [CascadingParameter(Name = "AuthenticationState")]
+        public AuthenticationState AuthenticationState { get; set; }
+
+        private LoginDto LoginModel { get; set; } = new();
+        private bool _isBusy = false;
+        private string? errorMessage = null;
+        private async Task LoginAsync()
         {
-            _isBusy = true;
-            errorMessage = null;
-            var response = await _httpClient.PostAsJsonAsync<LoginDto>("/api/account/Login", LoginModel);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var authResult =JsonConverter.Deserialize<AuthResponseDto>(content);
+                _isBusy = true;
+                errorMessage = null;
+                var response = await _httpClient.PostAsJsonAsync<LoginDto>("/api/account/Login", LoginModel);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var authResult =JsonConverter.Deserialize<AuthResponseDto>(content);
 
-                var serialized =JsonConverter.Serialize(authResult);
-                await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
-                //_navManager.NavigateTo("/chat");
-                AuthenticationState.LoadState(authResult);
+                    var serialized =JsonConverter.Serialize(authResult);
+                    await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
+                    //_navManager.NavigateTo("/chat");
+                    AuthenticationState.LoadState(authResult);
 
+                }
+                else
+                {
+                    string? errorContent = null;
+                    try
+                    {
+                        errorContent = await response.Content.ReadAsStringAsync();
+                    }
+                    catch
+                    {
+                    }
+                    if (string.IsNullOrWhiteSpace(errorContent))
+                    {
+                        errorContent = $"Error {response.StatusCode} - ${response.ReasonPhrase}";
+                    }
+                    _isBusy = false;
+                    errorMessage = errorContent;
+                }
             }
-            else
+            catch (Exception)
             {
-                string? errorContent = null;
-                try
-                {
-                    errorContent = await response.Content.ReadAsStringAsync();
-                }
-                catch
-                {
-                }
-                if (string.IsNullOrWhiteSpace(errorContent))
-                {
-                    errorContent = $"Error {response.StatusCode} - ${response.ReasonPhrase}";
-                }
-                _isBusy = false;
-                errorMessage = errorContent;
+
+                throw;
             }
         }
-        catch (Exception)
-        {
-
-            throw;
-        }
-    }
 
 
 
@@ -142,39 +115,8 @@
 
 
 
-    //[CascadingParameter(Name = "AuthenticationState")]
-    //public AuthenticationState AuthState { get; set; } = new();
+
+    }*@
 
 
-    //public LoginDto LoginModel { get; set; } = new LoginDto();
 
-    //private bool _isBusy = false;
-    //private string? errorMessage = null;
-
-    //private async Task LoginAsync()
-    //{
-    //    try
-    //    {
-    //        _isBusy = true;
-    //        var response = await _accountService.Login(LoginModel);
-
-    //        if (response.IsSuccessStatusCode)
-    //        {
-
-    //            _navManager.NavigateTo("/chat");
-    //        }
-    //        else
-    //        {
-
-    //            errorMessage = $"Incorect Username/Password";
-    //            _isBusy = false;
-    //        }
-
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        errorMessage = ex.Message;
-    //        _isBusy = false;
-    //    }
-    //}
-}

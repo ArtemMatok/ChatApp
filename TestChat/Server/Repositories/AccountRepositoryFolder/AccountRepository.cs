@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TestChat.Server.Data;
 using TestChat.Server.Data.Entities;
 using TestChat.Server.Hubs;
+using TestChat.Server.Repositories.MediaAccountRepositoryFold;
 using TestChat.Shared.Chat;
 using TestChat.Shared.DTOs;
 
@@ -11,11 +12,13 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
     public class AccountRepository : IAccountRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMediaAccountRepository _mediaAccountRepository;
         private readonly IHubContext<BlazingChatHub, IBlazingChatHubClient> _hubContext;
-        public AccountRepository(ApplicationDbContext context, IHubContext<BlazingChatHub, IBlazingChatHubClient> hubContext)
+        public AccountRepository(ApplicationDbContext context, IHubContext<BlazingChatHub, IBlazingChatHubClient> hubContext, IMediaAccountRepository mediaAccountRepository)
         {
             _context = context;
             _hubContext = hubContext;
+            _mediaAccountRepository = mediaAccountRepository;
         }
 
         public async Task<User> Login(LoginDto dto, CancellationToken cancellationToken)
@@ -46,6 +49,14 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
                 Name = dto.Name,
                 Password = dto.Password
             };
+            var mediaAccount = new MediaAccount()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.Name
+            };
+
+            _mediaAccountRepository.Create(mediaAccount);   
             await _context.Users.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 

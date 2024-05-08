@@ -59,7 +59,7 @@ namespace TestChat.Client.Services.AccountService
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 
                 });
-                //_authState.LoadState(authResult);
+                
                 return true;
             }
             else
@@ -72,10 +72,7 @@ namespace TestChat.Client.Services.AccountService
                 catch
                 {
                 }
-                //if(string.IsNullOrWhiteSpace(errorContent))
-                //{
-                //    errorContent = $"Error {response.StatusCode} - ${response.ReasonPhrase}";
-                //}
+              
                 return false;
             }
         }
