@@ -9,110 +9,80 @@
 <main>
     <div class="container-main">
         <div class="left">
-            <a style="text-decoration:none;" class="profile">
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="handle">
-                    <h4 style="color:black">Full Name</h4>
-                    <p class="text-muted">
-                        @@username
-                    </p>
-                </div>
-            </a>
-
-
-
-            <div  class="sidebar">
-                <a style="text-decoration:none;color:black;" class="menu-item active">
-                    <span><i class="uil uil-home"></i></span><h3>Home</h3>
-                </a>
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
-                </a>
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-bell"><small class="notification-count">9+</small></i></span><h3>Notifications</h3>
-
-                    <div class="notifications-popup">
-                        <div>
-                            <div class="profile-photo">
-                                <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                            </div>
-                            <div class="notification-body">
-                                <b>Full Name</b> accepted your friend request
-                                <small class="text-muted">2 DAYS AGO</small>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="profile-photo">
-                                <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                            </div>
-                            <div class="notification-body">
-                                <b>Full Name</b> accepted your friend request
-                                <small class="text-muted">2 DAYS AGO</small>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="profile-photo">
-                                <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                            </div>
-                            <div class="notification-body">
-                                <b>Full Name</b> accepted your friend request
-                                <small class="text-muted">2 DAYS AGO</small>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="profile-photo">
-                                <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                            </div>
-                            <div class="notification-body">
-                                <b>Full Name</b> accepted your friend request
-                                <small class="text-muted">2 DAYS AGO</small>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="profile-photo">
-                                <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                            </div>
-                            <div class="notification-body">
-                                <b>Full Name</b> accepted your friend request
-                                <small class="text-muted">2 DAYS AGO</small>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-envelope-alt"><small class="notification-count">6</small></i></span><h3>Message</h3>
-                </a>
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
-                </a>
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-chart-line"></i></span><h3>Analytics</h3>
-
-                </a>
-
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-palette"></i></span><h3>Theme</h3>
-                </a>
-
-                <a style="text-decoration:none;color:black;" class="menu-item">
-                    <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
-                </a>
-
-            </div>
-            <label for="create-post" class="btn-main btn-main-primary">Create Post</label>
+            <LeftSection OnThemeButtonClick="ToggleTheme"/>
         </div>
         <div class="middle">
             <MiddleSection/>
         </div>
         <div class="right">
+            <RightSection/>
         </div>
     </div>
 </main>
 
+<div class="@(isClicked ? "customize-theme" : "")">
+   
+        <div class="card">
+            <h2>Customize your view</h2>
+            <p class="text-muted">Manage your font size, color, and background.</p>
+
+            <div class="font-size">
+                <h4>Font Size</h4>
+                <div>
+                    <h6>Aa</h6>
+                    <div class="choose-size">
+                        <span class="font-size-1 "></span>
+                        <span class="font-size-2 active"></span>
+                        <span class="font-size-3"></span>
+                        <span class="font-size-4"></span>
+                        <span class="font-size-5"></span>
+                    </div>
+                    <h3>Aa</h3>
+                </div>
+            </div>
+
+
+            <div class="color">
+                <h4>Color</h4>
+                <div class="choose-color">
+                    <span class="color-1 active"></span>
+                    <span class="color-2 active"></span>
+                    <span class="color-3 active"></span>
+                    <span class="color-4 active"></span>
+                    <span class="color-5 active"></span>
+                </div>
+            </div>
+
+            <div class="background">
+                <h4>Background</h4>
+                <div class="choose-bg">
+                    <div class="bg-1 active">
+                        <span></span>
+                        <h5 for="bg-1">Light</h5>
+                    </div>
+                    <div class="bg-2 ">
+                        <span></span>
+                        <h5 for="bg-2">Dim</h5>
+                    </div>
+                    <div class="bg-3">
+                        <span></span>
+                        <h5 for="bg-3">Lights Out</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+</div>
 
 
 @code {
+    private bool isClicked = false;
 
+    private void ToggleTheme()
+    {
+        isClicked = !isClicked;
+        Console.WriteLine(isClicked);
+        //TODO 
+        //Bootstrap Modal вікно
+    }
 }
