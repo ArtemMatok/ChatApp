@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 :root{
+    --primary-color-hue:252;
     --main-color:#7952b3;
     --color-dark:hsl(252,30%,17%);
     --color-white:hsl(252,30%,100%);
     --color-light:hsl(252,30%,95%);
     --color-grey:hsl(252,15%,65%);
-    --color-primary:hsl(252,75%,60%);
+    --color-primary:hsl(var(--primary-color-hue),75%,60%);
     --color-secondary:hsl(252,100%,90%);
     --color-success:hsl(120,95%,65%);
     --color-danger:hsl(0,95%,65%);
@@ -891,20 +892,22 @@ main .container-main .right{
     
 }
 
-.customize-theme .card{
-    background:var(--color-white);
-    padding:3rem;
-    border-radius:var(--card-border-radius);
-    width:50%;
+.custom-none{
+    display:none;
+}
+
+.customize-theme .card {
+    background: var(--color-white);
+    padding: 3rem;
+    border-radius: var(--card-border-radius);
+    width: 50%;
 }
 
 
 
 
 
-.customize-theme .font-size{
-    margin:5rem;
-}
+
 
 .customize-theme .font-size > div{
     display:flex;
@@ -945,14 +948,17 @@ main .container-main .right{
     margin-top:2rem;
 }
 
-.customize-theme .choose-color{
-    background:var(--color-light);
-    padding:var(--search-padding);
-    border-radius:var(--card-border-radius);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.customize-theme .choose-color {
+    background: var(--color-light);
+    padding: var(--search-padding);
+    border-radius: var(--card-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
 }
+
+
 
 .customize-theme .choose-color span{
     width:2.2rem;
@@ -1020,7 +1026,7 @@ main .container-main .right{
     color: white;
 }
 
-.customize-theme .choose-bg >div span{
+.customize-theme .choose-bg > div span{
     width:2rem;
     height:2rem;
     border:2px solid var(--color-grey);
@@ -1055,6 +1061,10 @@ main .container-main .right{
         display:none;
     }
 
+
+    .customize-theme .card{
+        width:92vw;
+    }
 }
 
 /*----End Media for Laptops and Tablet -----*/
@@ -1096,6 +1106,9 @@ main .container-main .right{
     main .container-main .right{
         display:none;
     }
+    .customize-theme .card {
+        width: 82vw;
+    }
 }
 
 @media screen and (max-width:600px){
@@ -1105,6 +1118,22 @@ main .container-main .right{
 
     main .middle .story .profile-photo {
        margin-left:-13px;
+    }
+    .customize-theme .card {
+        width: 72vw;
+    }
+
+    .customize-theme .choose-bg {
+        display: flow;
+
+    }
+
+    .bg{
+        margin-top:0.5rem;
+    }
+
+    .customize-theme .font-size {
+        margin: 0;
     }
 }
 
