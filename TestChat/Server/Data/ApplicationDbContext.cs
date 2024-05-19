@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestChat.Server.Data.Entities;
+using TestChat.Shared.Data;
 
 namespace TestChat.Server.Data
 {

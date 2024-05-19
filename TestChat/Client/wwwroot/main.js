@@ -6,6 +6,13 @@
 const fontSizes = document.querySelectorAll('.choose-size span');
 const root = document.querySelector(':root');
 const colorPalette = document.querySelectorAll('.choose-color span')
+const Bg1 = document.querySelector('.bg-1');
+const Bg2 = document.querySelector('.bg-2');
+const Bg3 = document.querySelector('.bg-3');
+
+
+
+
 
 window.changeSize = (numberSize) => {
 
@@ -57,4 +64,37 @@ window.changeColor = (colorNumber) => {
     }
 
     root.style.setProperty('--primary-color-hue', primaryHue);
+}
+
+let lightColorLightness;
+let whiteColorLightness;
+let darkColorLightness;
+
+const changeBG = () => {
+    root.style.setProperty('--light-color-lightness', lightColorLightness);
+    root.style.setProperty('--white-color-lightness', whiteColorLightness);
+    root.style.setProperty('--dark-color-lightness', darkColorLightness);
+}
+
+window.changeBackColor = (backColorNumber) => {
+
+
+    if (backColorNumber == 1) {
+        
+        window.location.reload();
+    } else if (backColorNumber == 2) {
+        darkColorLightness = '95%';
+        whiteColorLightness = '15%';
+        lightColorLightness = '20%';
+
+      
+        changeBG();
+    } else if (backColorNumber == 3) {
+        darkColorLightness = '95%';
+        whiteColorLightness = '0%';
+        lightColorLightness = '10%';
+
+        
+        changeBG();
+    }
 }

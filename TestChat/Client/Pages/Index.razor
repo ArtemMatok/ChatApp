@@ -1,8 +1,9 @@
 ﻿
 @page "/"
-    @inject HttpClient _httpClient
-    @inject IJSRuntime JsRuntime
-    @using BlazorBootstrap
+@inject HttpClient _httpClient
+@inject IJSRuntime JsRuntime
+@inject NavigationManager _navManager
+@using BlazorBootstrap
 
 
     <div class="container @className" id="container">
@@ -156,7 +157,6 @@
 
                     var serialized = JsonConverter.Serialize(authResult);
                     await JsRuntime.InvokeVoidAsync("window.setToStorage", AuthenticationState.AuthStoreKey, serialized);
-                    //_navManager.NavigateTo("/chat");
                     AuthenticationState.LoadState(authResult);
 
                 }

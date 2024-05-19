@@ -1,12 +1,14 @@
-﻿
+﻿@using TestChat.Shared.Data
+
+
 <a style="text-decoration:none;" class="profile">
     <div class="profile-photo">
         <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
     </div>
     <div class="handle">
-        <h4 style="color:black">Full Name</h4>
+        <h4 style="color:black">@user.FullName</h4>
         <p class="text-muted">
-            @@username
+            @@@user.UserName
         </p>
     </div>
 </a>
@@ -94,7 +96,21 @@
 
 
 @code{
+    [Parameter]
+    public MediaAccount UserAccount { get; set; }
+
+
     [Parameter] public EventCallback OnThemeButtonClick { get; set; }
+
+    private MediaAccount user = new();
+
+
+
+    protected override async  Task OnInitializedAsync()
+    {
+        user = UserAccount;
+    }
+
 
     private void ThemeButtonClicked()
     {

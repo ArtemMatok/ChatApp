@@ -1,12 +1,28 @@
-﻿<div class="container-main">
+﻿@inject IJSRuntime JsRuntime 
+@inject NavigationManager _navManager 
+
+<div class="container-main">
     <h2 class="log">
         InteractiNet
     </h2>
    
     <div class="create">
-        <label class="btn-main btn-main-primary" for="create-post">Create</label>
+        <button @onclick="HandleLogout"  class="btn-main btn-main-primary" for="create-post">Logout</button>
         <div class="profile-photo">
             <img src="https://i.ibb.co/n8SH3Cj/profile-1.jpg" alt="Alternate Text" />
         </div>
     </div>
 </div>
+
+
+
+@code{
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthState { get; set; }
+    private async Task HandleLogout()
+    {
+        await JsRuntime.InvokeVoidAsync("window.removeFromStorage", AuthenticationState.AuthStoreKey);
+        AuthState.UnloadState();
+        _navManager.NavigateTo("/");
+    }
+}

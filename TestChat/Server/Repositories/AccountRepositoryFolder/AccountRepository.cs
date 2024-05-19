@@ -5,6 +5,7 @@ using TestChat.Server.Data.Entities;
 using TestChat.Server.Hubs;
 using TestChat.Server.Repositories.MediaAccountRepositoryFold;
 using TestChat.Shared.Chat;
+using TestChat.Shared.Data;
 using TestChat.Shared.DTOs;
 
 namespace TestChat.Server.Repositories.AccountRepositoryFolder
@@ -19,6 +20,11 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
             _context = context;
             _hubContext = hubContext;
             _mediaAccountRepository = mediaAccountRepository;
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<User> Login(LoginDto dto, CancellationToken cancellationToken)

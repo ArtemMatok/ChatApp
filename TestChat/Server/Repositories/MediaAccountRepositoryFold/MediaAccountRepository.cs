@@ -1,5 +1,7 @@
-﻿using TestChat.Server.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TestChat.Server.Data;
 using TestChat.Server.Data.Entities;
+using TestChat.Shared.Data;
 
 namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
 {
@@ -20,6 +22,11 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
             }
            _context.MediaAccounts.Add(mediaAccount);
             return Save();
+        }
+
+        public async Task<MediaAccount> GetMediaAccountByUserName(string userName)
+        {
+            return await  _context.MediaAccounts.FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
         public bool Save()

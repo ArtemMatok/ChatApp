@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TestChat.Client;
 using TestChat.Client.Services.AccountService;
+using TestChat.Client.Services.MediaAccountServiceFold;
 using TestChat.Client.Services.MessageServiceFold;
 using TestChat.Client.Services.UserServ;
 using TestChat.Client.States;
@@ -14,5 +15,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IAccountService, AccountService>();  
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMediaAccountService, MediaAccountService>();
 builder.Services.AddBlazorBootstrap();
 await builder.Build().RunAsync();

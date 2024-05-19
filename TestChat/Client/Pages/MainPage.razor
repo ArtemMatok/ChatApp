@@ -1,7 +1,9 @@
-﻿@page "/main-page"
+﻿@page "/main-page/{Id:int}"
 @using TestChat.Client.Components.MainPage
 @using TestChat.Client.Components.MainPage.Componetns 
 @inject IJSRuntime _jsRuntime
+@inject IMediaAccountService _mediaAccountService
+
 <nav >
     <NavMenu></NavMenu>
 </nav>
@@ -11,7 +13,7 @@
 <main >
     <div class="container-main" >
         <div class="left">
-            <LeftSection  OnThemeButtonClick="ToggleTheme" />
+            <LeftSection UserAccount="user"  OnThemeButtonClick="ToggleTheme" />
         </div>
         <div class="middle">
             @*<MiddleSection/>*@
@@ -401,6 +403,8 @@
     </div>
 </main>
 
+
+
 <div class="@(isClicked ? "customize-theme" : "custom-none")">
    
     <div class="card">
@@ -435,21 +439,21 @@
         </div>
 
         <div class="background">
-            <h4>Background</h4>
+            @*<h4>Background</h4>
             <div class="choose-bg">
-                <div class="bg bg-1 active">
+                <div @onclick="()=>ChangeBackColor(1)" class="bg bg-1 active">
                     <span></span>
                     <h5 for="bg-1">Light</h5>
                 </div>
-                <div class="bg bg-2 ">
+                <div @onclick="()=>ChangeBackColor(2)" class="bg bg-2 ">
                     <span></span>
                     <h5 for="bg-2">Dim</h5>
                 </div>
-                <div class="bg bg-3">
+                <div @onclick="()=>ChangeBackColor(3)" class="bg bg-3">
                     <span></span>
                     <h5 for="bg-3">Lights Out</h5>
                 </div>
-            </div>
+            </div>*@
             <button @onclick="CloseModal" class="btn-main btn-main-primary mt-2">Save</button>
         </div>
     </div>
@@ -457,13 +461,24 @@
 </div>
 
 
-
-
 @code {
+    [Parameter]
+    public int Id { get; set; }
+
+
+
     private string sizeActive = "4";
     private string colorActive = "1";
-
     private bool isClicked = false;
+    private MediaAccount user ;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _mediaAccountService.GetAccountById(Id);
+        Console.WriteLine();
+    }
+
 
 
     private void  ToggleTheme()
@@ -527,5 +542,9 @@
         await _jsRuntime.InvokeVoidAsync("window.changeColor", colorNumber);
     }
 
+    private async Task ChangeBackColor(int backColorNumber)
+    {
+        await _jsRuntime.InvokeVoidAsync("window.changeBackColor", backColorNumber);
+    }
 
 }
