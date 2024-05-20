@@ -30,5 +30,16 @@ namespace TestChat.Server.Controllers
             var account = await _mediaAccountRepository.GetMediaAccountByUserName(user.UserName);
             return Ok(account);
         }
+
+        [HttpGet("GetByUserName/{userName}")]
+        public async Task<ActionResult<MediaAccount>> GetMediaAccountByUserName(string userName)
+        {
+            var account = await _mediaAccountRepository.GetMediaAccountByUserName(userName);
+            if(account is null)
+            {
+                return BadRequest("User wasn`t found");
+            }
+            return Ok(account);
+        }
     }
 }

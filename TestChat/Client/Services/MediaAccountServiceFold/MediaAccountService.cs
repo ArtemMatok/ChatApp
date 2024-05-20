@@ -16,5 +16,18 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
         {
             return await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetById/{id}");
         }
+
+        public async Task<MediaAccount> GetAccountByUserName(string userName)
+        {
+            var account = await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetByUserName/{userName}");
+            if (account is not null)
+            {
+                return account;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

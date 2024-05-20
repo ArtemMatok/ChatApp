@@ -1,0 +1,30 @@
+﻿@inject IMediaAccountService _mediaAccountService 
+
+<center>
+    <div class="box">
+        <img class="img-edit" src="@user.Photo" />
+        <input type="file" name="name" value="" />
+        <EditForm Model="user" OnValidSubmit="SaveHandle">
+            <InputText  class="input-edit" @bind-Value="user.FullName"></InputText>
+            <InputText class="input-edit" @bind-Value="user.UserName"></InputText>
+        </EditForm>
+        <button class="btn-main btn-main-primary">Save</button>
+    </div>
+</center>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; }
+
+    private MediaAccount user = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _mediaAccountService.GetAccountByUserName(UserName);
+    }
+
+    private async Task SaveHandle()
+        {
+
+        }
+}

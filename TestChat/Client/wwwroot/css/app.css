@@ -1114,6 +1114,7 @@ main .container-main .right{
     .customize-theme .card {
         width: 82vw;
     }
+  
 }
 
 @media screen and (max-width:600px){
@@ -1140,7 +1141,50 @@ main .container-main .right{
     .customize-theme .font-size {
         margin: 0;
     }
+   
 }
 
 
 /*---End Phones -----*/
+
+
+/*--- Edit Profile -----*/
+.box{
+    box-sizing:border-box;
+    overflow:hidden;
+}
+
+
+.img-edit {
+    box-sizing: border-box;
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    margin: 0;
+    border: 5px solid var(--color-primary);
+    padding: 3px;
+    background-color: white;
+}
+
+.input-edit{
+    display:block;
+    box-sizing:border-box;
+    background:none;
+    color:black;
+    margin-bottom:30px;
+    padding:4px;
+    width:220px;
+    height:32px;
+    border:none;
+    border-bottom:1px solid var(--color-primary);
+    font-size:15px;
+    transition:0.2s ease;
+}
+
+.input-edit:focus{
+    border-bottom:2px solid #3498db;
+    border-bottom-right-radius:20px;
+    color:black;
+    transition:0.2s ease;
+}
+/*---End Edit Profile -----*/
