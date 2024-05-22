@@ -8,5 +8,8 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
         Task<User> Register(RegisterDto dto, CancellationToken cancellationToken);    
         Task<User> Login(LoginDto dto, CancellationToken cancellationToken);
         Task<User> GetUserById(int id);
+        Task<User> GetUserByUserName(string userName);
+        bool Update(User user);
+        bool Save();
     }
 }

@@ -29,5 +29,15 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
                 return null;
             }
         }
+
+        public async Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccountUpdate)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateAccount/{userName}", mediaAccountUpdate);
+            if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

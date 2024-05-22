@@ -6,6 +6,7 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
     public interface IMediaAccountRepository
     {
         bool Create(MediaAccount mediaAccount);
+        bool Update(MediaAccount mediaAccount);
         bool Save();
         Task<MediaAccount> GetMediaAccountByUserName(string userName);
 

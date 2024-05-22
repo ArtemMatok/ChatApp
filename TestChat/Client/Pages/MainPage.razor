@@ -1,8 +1,10 @@
 ﻿@page "/main-page/{Id:int}"
+@page "/main-page/{UserName}"
 @using TestChat.Client.Components.MainPage
 @using TestChat.Client.Components.MainPage.Componetns
 @inject IJSRuntime _jsRuntime
 @inject IMediaAccountService _mediaAccountService
+@inject NavigationManager _navManager
 
 <nav>
     <NavMenu></NavMenu>
@@ -13,7 +15,7 @@
 <main>
     <div class="container-main">
         <div class="left">
-            <LeftSection OnEditProfileClick="ShowEditProfile" UserAccount="user" OnThemeButtonClick="ToggleTheme" />
+            <LeftSection OnEditProfileClick="ShowEditProfile" UserAccount="mediaAccount" OnThemeButtonClick="ToggleTheme" />
         </div>
         <div class="middle">
             @*<MiddleSection/>*@
@@ -459,38 +461,37 @@
     </div>
 
 </div>
-<Modal @ref="modal" />
-
-<Button Color="ButtonColor.Primary" @onclick="ShowEditProfile">Show Employee Component</Button>
 
 @code {
-    private Modal modal = default!;
-
-    private async Task ShowEditProfile()
-    {
-        var parameters = new Dictionary<string, object>();
-        parameters.Add("UserName", user.UserName);
-        await modal.ShowAsync<EditProfile>(title: "Edit Profile", parameters:parameters) ;
-    }
-
-
-
 
 
     [Parameter]
     public int Id { get; set; }
-
-
+    [Parameter]
+    public string UserName { get; set; }
 
     private string sizeActive = "4";
     private string colorActive = "1";
     private bool isClicked = false;
-    private MediaAccount user;
+    private MediaAccount mediaAccount;
+
+
+
+
 
 
     protected override async Task OnInitializedAsync()
     {
-        user = await _mediaAccountService.GetAccountById(Id);
+        if(Id != 0 )
+        {
+            mediaAccount = await _mediaAccountService.GetAccountById(Id);
+        }
+        if(UserName != null)
+        {
+            mediaAccount = await _mediaAccountService.GetAccountByUserName(UserName);        
+        }
+
+
         Console.WriteLine();
     }
 
@@ -500,9 +501,10 @@
         isClicked = true;
     }
 
-    private void CloseModal()
+    private async Task CloseModal()
     {
         isClicked = false;
+
     }
 
     private async Task ChangeFontSize(int numberSize)
@@ -561,4 +563,8 @@
         await _jsRuntime.InvokeVoidAsync("window.changeBackColor", backColorNumber);
     }
 
+    private async Task ShowEditProfile()
+    {
+        _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
+    }
 }

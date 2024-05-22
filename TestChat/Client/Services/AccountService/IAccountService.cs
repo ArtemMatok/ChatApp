@@ -6,5 +6,6 @@ namespace TestChat.Client.Services.AccountService
     {
         Task<HttpResponseMessage> Login(LoginDto loginModel);
         Task<bool> Register(RegisterDto registerModel);
+        
     }
 }

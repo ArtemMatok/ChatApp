@@ -27,6 +27,11 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<User> GetUserByUserName(string userName)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        }
+
         public async Task<User> Login(LoginDto dto, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == dto.UserName && x.Password == dto.Password, cancellationToken); 
@@ -69,6 +74,18 @@ namespace TestChat.Server.Repositories.AccountRepositoryFolder
             await _hubContext.Clients.All.UserConnected(new UserDto(user.Id, user.Name));
             return user;
 
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public bool Update(User user)
+        {
+            _context.Users.Update(user);
+            return Save();
         }
     }
 }

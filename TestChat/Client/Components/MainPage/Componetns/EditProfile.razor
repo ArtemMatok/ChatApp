@@ -1,30 +1,98 @@
-﻿@inject IMediaAccountService _mediaAccountService 
+﻿@page "/EditProfile/{UserName}"
+
+@inject IMediaAccountService _mediaAccountService 
+@inject IAccountService _accountService;
+@inject NavigationManager _navManager 
+
 
 <center>
+    <h1>Edit Profile</h1>
     <div class="box">
-        <img class="img-edit" src="@user.Photo" />
-        <input type="file" name="name" value="" />
-        <EditForm Model="user" OnValidSubmit="SaveHandle">
-            <InputText  class="input-edit" @bind-Value="user.FullName"></InputText>
-            <InputText class="input-edit" @bind-Value="user.UserName"></InputText>
+        <img class="img-edit" src="@mediaAccount.Photo" />
+       
+        <EditForm Model="mediaAccount" OnValidSubmit="SaveHandle">
+            <DataAnnotationsValidator />
+            <InputFile OnChange="UploadImage"></InputFile>
+            <InputText class="input-edit" @bind-Value="mediaAccount.FullName"></InputText>
+            <ValidationMessage For="()=>mediaAccount.FullName"></ValidationMessage>
+
+            <InputText class="input-edit" @bind-Value="mediaAccount.UserName"></InputText>
+            <ValidationMessage For="()=>mediaAccount.UserName"></ValidationMessage>
+
+            <button @onchange="SaveHandle" class="btn-main btn-main-primary">Save</button>
         </EditForm>
-        <button class="btn-main btn-main-primary">Save</button>
+       
     </div>
+
 </center>
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" />
 
 @code {
     [Parameter]
     public string UserName { get; set; }
 
-    private MediaAccount user = new();
+
+    private MediaAccount mediaAccount = new();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await _mediaAccountService.GetAccountByUserName(UserName);
+        mediaAccount = await _mediaAccountService.GetAccountByUserName(UserName);
     }
 
     private async Task SaveHandle()
+    {
+        var saved = await _mediaAccountService.UpdateMediaAccount(UserName, mediaAccount);
+        if(saved)
+        {
+            _navManager.NavigateTo($"/main-page/{UserName}");
+        }
+        else
+        {
+            CreateToastMessageWarning(ToastType.Warning);
+        }
+    }
+
+    #region Toast
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+
+    private void ShowMessageWarning(ToastType toastType) => messages.Add(CreateToastMessageWarning(toastType));
+
+    private ToastMessage CreateToastMessageWarning(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Message = $"Something went wrong... {DateTime.Now}",
+    };
+
+
+    #endregion
+
+    #region Image
+    private string ImageUploadMessage = "";
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        // Отримати вибраний файл
+        var imageFile = e.File;
+
+        // Перевірити, чи файл не є порожнім
+        if (imageFile != null)
         {
 
+            var format = imageFile.ContentType;
+            var resizeImage = await imageFile.RequestImageFileAsync(format, 300, 300);
+            var buffer = new byte[resizeImage.Size];
+            await resizeImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            ImageUploadMessage = "";
+
+            mediaAccount.Photo = imageData;
         }
+        else
+        {
+            
+            ImageUploadMessage = "File is empty.";
+        }
+    }
+    #endregion
 }

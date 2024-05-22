@@ -1167,6 +1167,7 @@ main .container-main .right{
 }
 
 .input-edit{
+    margin-top:1rem;
     display:block;
     box-sizing:border-box;
     background:none;

@@ -34,5 +34,11 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public bool Update(MediaAccount mediaAccount)
+        {
+            _context.MediaAccounts.Update(mediaAccount);
+            return Save();
+        }
     }
 }

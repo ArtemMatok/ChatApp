@@ -41,5 +41,37 @@ namespace TestChat.Server.Controllers
             }
             return Ok(account);
         }
+
+        [HttpPut("UpdateAccount/{userName}")]
+        public async Task<IActionResult> UpdateAccount(string userName, MediaAccount updateMediaAccount)
+        {
+            if(updateMediaAccount is null)
+            {
+                return BadRequest("UpdateMediaAccount is empty");
+            }
+
+            var mediaAccount = await _mediaAccountRepository.GetMediaAccountByUserName(userName);
+            if(mediaAccount is null)
+            {
+                return BadRequest("MediaAccount is empty");
+            }
+
+            var user = await _accountRepository.GetUserByUserName(userName);
+            if (user is null) 
+            {
+                return BadRequest("User is empty");
+            }
+            //Update UserAccount
+            user.UserName = updateMediaAccount.UserName;
+            user.Name = updateMediaAccount.FullName;
+            _accountRepository.Update(user);
+            //Update MediaAccount
+            mediaAccount.FullName = updateMediaAccount.FullName;
+            mediaAccount.UserName = updateMediaAccount.UserName;
+            mediaAccount.Photo = updateMediaAccount.Photo;
+            _mediaAccountRepository.Update(mediaAccount);
+            return Ok("Success");
+        }
+
     }
 }
