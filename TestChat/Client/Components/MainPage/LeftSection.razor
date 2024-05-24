@@ -1,7 +1,7 @@
 ﻿@using TestChat.Shared.Data
 
 
-<a @onclick="EditProfileClick" style="text-decoration:none;" class="profile">
+<a  style="text-decoration:none;" class="profile">
     <div class="profile-photo">
         <img src="@UserAccount.Photo" alt="Alternate Text" />
     </div>
@@ -88,7 +88,7 @@
         <span><i class="uil uil-palette" ></i></span><h3>Theme</h3>
     </a>
 
-    <a style="text-decoration:none;color:black;" class="menu-item">
+    <a @onclick="EditProfileClick" style="text-decoration:none;color:black;" class="menu-item">
         <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
     </a>
 

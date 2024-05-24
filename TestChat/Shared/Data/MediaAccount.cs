@@ -15,7 +15,9 @@ namespace TestChat.Shared.Data
         [Required(ErrorMessage = "Enter Your User Name")]
         public string UserName { get; set; }
         public string Photo { get; set; } = "https://i.ibb.co/rc0fPvM/4cdee02fbf6649b4e2c7b597f9d4d143.jpg";
-
+        
+        public List<MediaAccount> Following { get; set; } = new List<MediaAccount>();
+        public List<MediaAccount> Folowers { get; set; } = new List<MediaAccount>();
 
     }
 }

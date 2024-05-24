@@ -1,15 +1,18 @@
 ﻿@inject IJSRuntime JsRuntime 
 @inject NavigationManager _navManager 
+@inject IMediaAccountService _accountMediaService
 
 <div class="container-main">
     <h2 class="log">
-        InteractiNet
+        SocialScape
     </h2>
    
     <div class="create">
         <button @onclick="HandleLogout"  class="btn-main btn-main-primary" for="create-post">Logout</button>
         <div class="profile-photo">
-            <img src="https://i.ibb.co/n8SH3Cj/profile-1.jpg" alt="Alternate Text" />
+          
+                <img src="@mediaAccount.Photo" alt="Alternate Text" />
+            
         </div>
     </div>
 </div>
@@ -19,10 +22,29 @@
 @code{
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; }
+
+    private MediaAccount mediaAccount = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
+    }
+
+
     private async Task HandleLogout()
     {
         await JsRuntime.InvokeVoidAsync("window.removeFromStorage", AuthenticationState.AuthStoreKey);
         AuthState.UnloadState();
         _navManager.NavigateTo("/");
     }
+
+
+    private void EditProfile()
+    {
+        _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
+    }
+
+
+
 }
