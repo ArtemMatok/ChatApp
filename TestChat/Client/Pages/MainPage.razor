@@ -15,7 +15,7 @@
 <main>
     <div class="container-main">
         <div class="left">
-            <LeftSection OnEditProfileClick="ShowEditProfile" UserAccount="mediaAccount" OnThemeButtonClick="ToggleTheme" />
+            <LeftSection  OnThemeButtonClick="ToggleTheme" />
         </div>
         <div class="middle">
             @*<MiddleSection/>*@
@@ -73,7 +73,7 @@
                 <input type="submit" value="Post" class="btn-main btn-main-primary" />
             </form>
 
-
+            
 
 
             <div class="feeds">
@@ -460,8 +460,8 @@
 
 
 
-
-
+    
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -546,8 +546,5 @@
         await _jsRuntime.InvokeVoidAsync("window.changeBackColor", backColorNumber);
     }
 
-    private async Task ShowEditProfile()
-    {
-        _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
-    }
+    
 }

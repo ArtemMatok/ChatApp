@@ -353,8 +353,8 @@ input {
 .container.active .toggle-right {
     transform: translateX(200%);
 }
-/*------------------End Login | Register--------------------------*/
-
+/*------------------End Login | Register--------------------------
+*/
 
 
 
@@ -479,10 +479,10 @@ nav .create{
     color:black;
 }
 
-main{
+/*main{
     position:relative;
-    /*top:5.4rem;*/
-}
+    top:5.4rem;
+}*/
 
 main .container-main{
     display:grid;
@@ -1039,7 +1039,7 @@ main .container-main .right{
     margin-right:1rem;
 }
 
-/*--- End Font Size ------ */
+/*--- End Font Size ------*/ 
 
 
 /*---- Media for Laptops and Tablet -----*/
@@ -1191,17 +1191,7 @@ main .container-main .right{
 /*---End Edit Profile -----*/
 
 /*--- Profile -----*/
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
 
-a {
-    text-decoration: none;
-}
 
 .header__wrapper header {
     margin-top: 100px;

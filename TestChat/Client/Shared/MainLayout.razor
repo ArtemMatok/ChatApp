@@ -3,6 +3,7 @@
 @inject IJSRuntime JsRuntime
 @using System.Text.Json
 @implements IDisposable
+@inject IMediaAccountService _mediaAccountService
  
 <CascadingValue Value="AuthenticationState" Name="AuthenticationState">
     <body>
@@ -41,6 +42,7 @@
         }
 
         AuthenticationState.PropertyChanged += AuthenticationStateChanged;
+       
     }
 
     private void AuthenticationStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

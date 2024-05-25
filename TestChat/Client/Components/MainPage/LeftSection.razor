@@ -1,14 +1,16 @@
 ﻿@using TestChat.Shared.Data
+@inject IMediaAccountService _accountMediaService
+@inject NavigationManager _navManager
 
 
 <a  style="text-decoration:none;" class="profile">
     <div class="profile-photo">
-        <img src="@UserAccount.Photo" alt="Alternate Text" />
+        <img src="@mediaAccount.Photo" alt="Alternate Text" />
     </div>
     <div class="handle">
-        <h4 style="color:black">@UserAccount.FullName</h4>
+        <h4 style="color:black">@mediaAccount.FullName</h4>
         <p class="text-muted">
-            @@@UserAccount.UserName
+            @@@mediaAccount.UserName
         </p>
     </div>
 </a>
@@ -88,7 +90,7 @@
         <span><i class="uil uil-palette" ></i></span><h3>Theme</h3>
     </a>
 
-    <a @onclick="EditProfileClick" style="text-decoration:none;color:black;" class="menu-item">
+    <a @onclick="ShowEditProfile" style="text-decoration:none;color:black;" class="menu-item">
         <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
     </a>
 
@@ -96,12 +98,14 @@
 
 
 @code{
-    [Parameter]
-    public MediaAccount UserAccount { get; set; } = new MediaAccount();
+
+    //TO DO 
+    //Зробити шоб зміна шрифта і коліру відкривалась тут
+
+
+ 
     [Parameter]
     public EventCallback OnThemeButtonClick { get; set; }
-    [Parameter]
-    public EventCallback OnEditProfileClick { get; set; }
 
 
 
@@ -110,8 +114,30 @@
         OnThemeButtonClick.InvokeAsync(null);
     }
 
-    private void EditProfileClick()
+    // private void EditProfileClick()
+    // {
+    //     OnEditProfileClick.InvokeAsync(null);
+    // }
+
+
+    [CascadingParameter(Name = "AuthenticationState")]
+    public AuthenticationState AuthState { get; set; } = new();
+   
+
+    private MediaAccount mediaAccount = new();
+
+
+
+    protected override async Task OnInitializedAsync()
     {
-        OnEditProfileClick.InvokeAsync(null);
+       
+            mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
+        
+       
+        
+    }
+    private async Task ShowEditProfile()
+    {
+        _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
     }
 }
