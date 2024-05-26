@@ -1,7 +1,7 @@
 ﻿@using TestChat.Shared.Data
 @inject IMediaAccountService _accountMediaService
 @inject NavigationManager _navManager
-
+@inject IJSRuntime _jsRuntime
 
 <a  style="text-decoration:none;" class="profile">
     <div class="profile-photo">
@@ -104,20 +104,17 @@
 
 
  
-    [Parameter]
-    public EventCallback OnThemeButtonClick { get; set; }
+     [Parameter]
+     public EventCallback OnThemeButtonClick { get; set; }
 
 
 
-    private void ThemeButtonClicked()
+     private void ThemeButtonClicked()
     {
-        OnThemeButtonClick.InvokeAsync(null);
+         OnThemeButtonClick.InvokeAsync(null);
     }
 
-    // private void EditProfileClick()
-    // {
-    //     OnEditProfileClick.InvokeAsync(null);
-    // }
+  
 
 
     [CascadingParameter(Name = "AuthenticationState")]
@@ -125,19 +122,25 @@
    
 
     private MediaAccount mediaAccount = new();
-
-
+    private bool isClicked = false;
+    private string sizeActive = "4";
+    private string colorActive = "1";
 
     protected override async Task OnInitializedAsync()
     {
        
-            mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
-        
-       
-        
+         mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
+
     }
     private async Task ShowEditProfile()
     {
         _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
     }
+
+   
+
+
+    
+
+
 }
