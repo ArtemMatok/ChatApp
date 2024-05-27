@@ -329,12 +329,19 @@
      
 
 
-
+            <button @onclick="Click">Enter</button>
 
 
 
 
 @code {
+
+    private void Click()
+    {
+        _navManager.NavigateTo("/profile");
+    }
+
+
 
 
     [Parameter]

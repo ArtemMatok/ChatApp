@@ -3,7 +3,7 @@
 @inject NavigationManager _navManager
 @inject IJSRuntime _jsRuntime
 
-<a  style="text-decoration:none;" class="profile">
+<a @onclick="ProfilePageClick"  style="text-decoration:none;" class="profile">
     <div class="profile-photo">
         <img src="@mediaAccount.Photo" alt="Alternate Text" />
     </div>
@@ -22,8 +22,11 @@
         <span><i class="uil uil-home"></i></span><h3>Home</h3>
     </a>
     <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
+        <span><i class="uil uil-plus-circle"></i></span><h3>Create</h3>
     </a>
+    @* <a style="text-decoration:none;color:black;" class="menu-item">
+        <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
+    </a> *@
     <a style="text-decoration:none;color:black;" class="menu-item">
         <span><i class="uil uil-bell"><small class="notification-count">9+</small></i></span><h3>Notifications</h3>
 
@@ -103,23 +106,23 @@
     //Зробити шоб зміна шрифта і коліру відкривалась тут
 
 
- 
-     [Parameter]
-     public EventCallback OnThemeButtonClick { get; set; }
+
+    [Parameter]
+    public EventCallback OnThemeButtonClick { get; set; }
 
 
 
-     private void ThemeButtonClicked()
+    private void ThemeButtonClicked()
     {
-         OnThemeButtonClick.InvokeAsync(null);
+        OnThemeButtonClick.InvokeAsync(null);
     }
 
-  
+
 
 
     [CascadingParameter(Name = "AuthenticationState")]
     public AuthenticationState AuthState { get; set; } = new();
-   
+
 
     private MediaAccount mediaAccount = new();
     private bool isClicked = false;
@@ -128,8 +131,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-       
-         mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
+
+        mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
 
     }
     private async Task ShowEditProfile()
@@ -137,7 +140,10 @@
         _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");
     }
 
-   
+    private void ProfilePageClick()
+    {
+        _navManager.NavigateTo($"/profile/{mediaAccount.UserName}");
+    }
 
 
     

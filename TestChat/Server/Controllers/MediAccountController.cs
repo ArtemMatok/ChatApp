@@ -69,6 +69,7 @@ namespace TestChat.Server.Controllers
             mediaAccount.FullName = updateMediaAccount.FullName;
             mediaAccount.UserName = updateMediaAccount.UserName;
             mediaAccount.Photo = updateMediaAccount.Photo;
+            mediaAccount.Description = updateMediaAccount.Description;
             _mediaAccountRepository.Update(mediaAccount);
             return Ok("Success");
         }

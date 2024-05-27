@@ -19,6 +19,10 @@
             <InputText class="input-edit" @bind-Value="mediaAccount.UserName"></InputText>
             <ValidationMessage For="()=>mediaAccount.UserName"></ValidationMessage>
 
+            <InputText class="input-edit" @bind-Value="mediaAccount.Description"></InputText>
+            <ValidationMessage For="()=>mediaAccount.Description"></ValidationMessage>
+
+
             <button @onchange="SaveHandle" class="btn-main btn-main-primary">Save</button>
         </EditForm>
        

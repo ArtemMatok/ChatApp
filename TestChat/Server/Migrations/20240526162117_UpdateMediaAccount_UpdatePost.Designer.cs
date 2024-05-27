@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestChat.Server.Data;
 
@@ -11,9 +12,11 @@ using TestChat.Server.Data;
 namespace TestChat.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240526162117_UpdateMediaAccount_UpdatePost")]
+    partial class UpdateMediaAccount_UpdatePost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace TestChat.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MediaAccountMediaAccount", b =>
+                {
+                    b.Property<int>("FollowingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FolowersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FollowingId", "FolowersId");
+
+                    b.HasIndex("FolowersId");
+
+                    b.ToTable("MediaAccountMediaAccount");
+                });
 
             modelBuilder.Entity("TestChat.Server.Data.Entities.Message", b =>
                 {
@@ -87,10 +105,6 @@ namespace TestChat.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -163,6 +177,21 @@ namespace TestChat.Server.Migrations
                     b.HasIndex("MediaAccountId");
 
                     b.ToTable("Post");
+                });
+
+            modelBuilder.Entity("MediaAccountMediaAccount", b =>
+                {
+                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
+                        .WithMany()
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
+                        .WithMany()
+                        .HasForeignKey("FolowersId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TestChat.Server.Data.Entities.Message", b =>

@@ -17,6 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\emoji.svg" />
+    <None Include="wwwroot\gallery.svg" />
+    <None Include="wwwroot\logo.png" />
+    <None Include="wwwroot\mic.svg" />
+    <None Include="wwwroot\more.svg" />
+    <None Include="wwwroot\smile.svg" />
+    <None Include="wwwroot\tag.svg" />
+    <None Include="wwwroot\theme.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" PrivateAssets="all" />
@@ -26,6 +37,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\TestChat.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\fb-icons\" />
   </ItemGroup>
 
 </Project>
