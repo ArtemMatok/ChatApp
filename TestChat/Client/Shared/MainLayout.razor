@@ -6,7 +6,7 @@
 @inject IMediaAccountService _mediaAccountService
  
 <CascadingValue Value="AuthenticationState" Name="AuthenticationState">
-    @if(AuthenticationState.User is null)
+    @if (AuthenticationState.User is null)
     {
         <body>
             @Body
@@ -97,7 +97,7 @@
             </main>
 
             @*  <Preload LoadingText="Loading..." />
-        @Body *@
+                @Body *@
 
         </body>
         <div class="@(isClicked ? "customize-theme" : "custom-none")">
@@ -139,8 +139,7 @@
 
         </div>
     }
-    
-   
+
 </CascadingValue>
 @code{
     public AuthenticationState AuthenticationState { get; set; } = new();
@@ -148,6 +147,7 @@
     private bool isClicked = false;
     private string sizeActive = "4";
     private string colorActive = "1";
+    private MediaAccount mediaAccount = new MediaAccount();
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,13 +167,15 @@
 
     }
 
-    private void AuthenticationStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private async void AuthenticationStateChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if(e.PropertyName == nameof(AuthenticationState.IsAuthenticated))
         {
             if(AuthenticationState.IsAuthenticated)
             {
+                mediaAccount = await _mediaAccountService.GetAccountById(AuthenticationState.User.Id);
                 _navManager.NavigateTo($"/main-page/{AuthenticationState.User.Id}");
+                
             }
             else
             {
@@ -246,4 +248,7 @@
         }
         await _jsRuntime.InvokeVoidAsync("window.changeColor", colorNumber);
     }
+
+
+ 
 }

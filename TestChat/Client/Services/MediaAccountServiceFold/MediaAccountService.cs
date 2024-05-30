@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Client.Services.MediaAccountServiceFold
 {
@@ -38,6 +39,17 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> UpdateMediaAccountByPost(string userName, Post post)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateAccountByPost/{userName}", post);
+
+            if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;   
         }
     }
 }

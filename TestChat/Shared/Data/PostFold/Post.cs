@@ -15,6 +15,8 @@ namespace TestChat.Shared.Data.PostFold
         [Required(ErrorMessage ="Photo is required")]
         public string ImageUrl { get; set; }
         public int Likes { get; set; } = 0;
+
+        public string Access;
         public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

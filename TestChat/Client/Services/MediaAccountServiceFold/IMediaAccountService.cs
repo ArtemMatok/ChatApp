@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Client.Services.MediaAccountServiceFold
 {
@@ -7,6 +8,7 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
     {
         Task<MediaAccount> GetAccountById(int id);
         Task<MediaAccount> GetAccountByUserName(string userName);
-        Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccount);  
+        Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccount);
+        Task<bool> UpdateMediaAccountByPost(string userName, Post post);
     }
 }

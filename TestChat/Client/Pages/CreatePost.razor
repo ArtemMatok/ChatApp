@@ -1,41 +1,205 @@
-﻿@page "/create-post"
+﻿@page "/create-post/{UserName}"
+@layout EmptyLayout
+@inject IMediaAccountService _mediaAccountService
+@inject IJSRuntime _jsRuntime
+@inject NavigationManager _navManager
 
+<div class="body-create">
+    <div class="container-create @(isPrivacyClick ?"active":"")">
+        <div class="wrapper">
+            <section class="post">
+               
+                <header @onclick="BackClick"><button class="btn-main btn-main-primary">Back</button></header>
 
-
-
-<div class="container-post">
-    <div class="wrapper">
-        <section class="post">
-            <header>Create Post</header>
-            <form action="#">
-                <div class="content">
-                    <img src="/logo.png" alt="Alternate Text" />
-                    <div class="details">
-                        <p>CodingNepal</p>
-                        <div class="privacy">
-                            <i class="fas fa-user-friends"></i>
-                            <span>Friends</span>
-                            <i class="fas fa-caret-down"></i>
+                <EditForm Model="post" class="form-post" OnValidSubmit="CreatePostHandler">
+                    <DataAnnotationsValidator />
+                    <div class="content">
+                        <img src="/logo.png" alt="logo">
+                        <div class="details">
+                            <p>CodingNepal</p>
+                            <div @onclick="()=>PrivacyClick(1)" class="privacy">
+                                <i class="fas fa-user-friends"></i>
+                                <span>@access</span>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
                         </div>
                     </div>
+                    <InputTextArea @bind-Value="post.Title" placeholder="What's on your mind?" spellcheck="false" required />
+
+                    <div class="options">
+                        <p>Add to Your Post</p>
+                        <ul class="list">
+                            <li>
+                                <label for="photo-post"><img src="/gallery.svg" alt="gallery"></label>
+                                <InputFile OnChange="UploadImage" type="file" id="photo-post" name="photo-post" /><br />
+                            </li>
+                            @if (post.ImageUrl != null)
+                            {
+                                <li @onclick="OnShowModalClick"><img src="/more.svg" alt="gallery"></li>
+                            }
+
+
+                        </ul>
+                    </div>
+                    <h4>@ImageUploadMessage</h4>
+                    <button>Post</button>
+                </EditForm>
+            </section>
+            <section class="audience">
+                <header>
+                    <div @onclick="()=>PrivacyClick(2)" class="arrow-back"><i class="fas fa-arrow-left"></i></div>
+                    <p>Select Audience</p>
+                </header>
+                <div class="content">
+                    <p>Who can see your post?</p>
+                    <span>Your post will show up in News Feed, on your profile and in search results.</span>
                 </div>
-                <textarea placeholder="What`s on your mind"></textarea>
-                <div class="list">
-                    <img style="margin-right:12px;" src="/gallery.svg" alt="Alternate Text" />
-                    <input type="file" />
-                </div>
-                <div class="photo-post">
-                    <img style="width:100%; height:100%;" src="/icon-192.png" alt="Alternate Text" />
-                </div>
-                <button class="btn-main btn-main-primary">Post</button>
-            </form>
-        </section>
+                <ul class="list">
+                    <li @onclick="()=>AccessClick(1)" class="@(accessNumber == 1? "active" : "")">
+                        <div class="column">
+                            <div class="icon"><i class="fas fa-globe-asia"></i></div>
+                            <div class="details">
+                                <p>Public</p>
+                                <span>Anyone on or off Facebook</span>
+                            </div>
+                        </div>
+                        <div class="radio"></div>
+                    </li>
+                    <li @onclick="()=>AccessClick(2)" class="@(accessNumber == 2? "active" : "")">
+                        <div class="column">
+                            <div class="icon"><i class="fas fa-user-friends"></i></div>
+                            <div class="details">
+                                <p>Friends</p>
+                                <span>Your friends on Facebook</span>
+                            </div>
+                        </div>
+                        <div class="radio"></div>
+                    </li>
+
+                </ul>
+            </section>
+        </div>
     </div>
 </div>
 
 
 
+<Modal @ref="modal" Title="Yout Photo">
+    <BodyTemplate>
+        <img src="@post.ImageUrl" />
+    </BodyTemplate>
+
+</Modal>
+
 
 @code {
-    
+    [Parameter]
+    public string UserName { get; set; }
+
+
+    private bool isPrivacyClick = false;
+    private MediaAccount mediaAccount = new MediaAccount();
+    private Post post = new Post();
+    private string access = "Public";
+    private ElementReference fileInput;
+    private int accessNumber = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        mediaAccount = await _mediaAccountService.GetAccountByUserName(UserName);
+    }
+
+
+    private void PrivacyClick(int numberOfClick)
+    {
+        if (numberOfClick == 1)
+        {
+            isPrivacyClick = true;
+        }
+        else
+        {
+            isPrivacyClick = false;
+        }
+
+    }
+
+    private async Task CreatePostHandler()
+    {
+        post.Access = access;
+
+        var result = await _mediaAccountService.UpdateMediaAccountByPost(UserName, post);
+        if(result)
+        {
+            _navManager.NavigateTo($"/main-page/{UserName}");
+        }
+        else
+        {
+
+        }
+
+    }
+
+    private void AccessClick(int numberClick)
+    {
+        if (numberClick == 1)
+        {
+            accessNumber = 1;
+            access = "Public";
+        }
+        else
+        {
+            accessNumber = 2;
+            access = "Friends";
+        }
+    }
+
+    private void BackClick()
+    {
+        _navManager.NavigateTo($"/main-page/{UserName}");
+    }
+
+
+
+    #region Image
+    private string ImageUploadMessage = "";
+    private async Task UploadImage(InputFileChangeEventArgs e)
+    {
+        // Отримати вибраний файл
+        var imageFile = e.File;
+
+        // Перевірити, чи файл не є порожнім
+        if (imageFile != null)
+        {
+
+            var format = imageFile.ContentType;
+            var resizeImage = await imageFile.RequestImageFileAsync(format, 300, 300);
+            var buffer = new byte[resizeImage.Size];
+            await resizeImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            ImageUploadMessage = "";
+
+            post.ImageUrl = imageData;
+        }
+        else
+        {
+
+            ImageUploadMessage = "File is empty.";
+        }
+    }
+    #endregion
+
+
+    #region Modal
+    private Modal modal = default!;
+
+    private async Task OnShowModalClick()
+    {
+        await modal.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal.HideAsync();
+    }
+    #endregion
 }

@@ -4,6 +4,7 @@ using TestChat.Server.Data.Entities;
 using TestChat.Server.Repositories.AccountRepositoryFolder;
 using TestChat.Server.Repositories.MediaAccountRepositoryFold;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Server.Controllers
 {
@@ -74,5 +75,23 @@ namespace TestChat.Server.Controllers
             return Ok("Success");
         }
 
+
+        [HttpPut("UpdateAccountByPost/{userName}")]
+        public async Task<IActionResult> UpdateAccountByPost(string userName, Post post)
+        {
+            var mediaAccount = await _mediaAccountRepository.GetMediaAccountByUserName(userName);
+            if (mediaAccount is null)
+            {
+                return BadRequest("MediaAccount is empty");
+            }
+            if(post is null)
+            {
+                return BadRequest("Post is null");
+            }
+            mediaAccount.Posts.Add(post);
+            _mediaAccountRepository.Update(mediaAccount);
+            return Ok("Update Success");
+
+        }
     }
 }

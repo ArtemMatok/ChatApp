@@ -1,4 +1,11 @@
-﻿window.showAlert = (message) =>{
+﻿window.triggerFileInputClick = function (inputId) {
+    document.getElementById(inputId).click();
+};
+
+
+
+
+window.showAlert = (message) => {
     alert(message);
 }
 

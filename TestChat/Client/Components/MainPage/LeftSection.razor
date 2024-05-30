@@ -21,7 +21,7 @@
     <a style="text-decoration:none;color:black;" class="menu-item active">
         <span><i class="uil uil-home"></i></span><h3>Home</h3>
     </a>
-    <a style="text-decoration:none;color:black;" class="menu-item">
+    <a @onclick="CreatePost" style="text-decoration:none;color:black;" class="menu-item">
         <span><i class="uil uil-plus-circle"></i></span><h3>Create</h3>
     </a>
     @* <a style="text-decoration:none;color:black;" class="menu-item">
@@ -100,6 +100,9 @@
 </div>
 
 
+
+
+
 @code{
 
     //TO DO 
@@ -109,13 +112,14 @@
 
     [Parameter]
     public EventCallback OnThemeButtonClick { get; set; }
-
-
+ 
 
     private void ThemeButtonClicked()
     {
         OnThemeButtonClick.InvokeAsync(null);
     }
+
+   
 
 
 
@@ -146,7 +150,12 @@
     }
 
 
-    
+
+    private void CreatePost()
+    {
+        _navManager.NavigateTo($"/create-post/{mediaAccount.UserName}");
+    }
+
 
 
 }

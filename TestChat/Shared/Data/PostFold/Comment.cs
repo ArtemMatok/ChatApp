@@ -14,5 +14,6 @@ namespace TestChat.Shared.Data.PostFold
         [Required(ErrorMessage = "Message is required")]
         public string Content { get; set; }
 
+
     }
 }
