@@ -91,7 +91,7 @@
 
 </Modal>
 
-
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter"  Delay="6000"/>
 @code {
     [Parameter]
     public string UserName { get; set; }
@@ -134,7 +134,7 @@
         }
         else
         {
-
+            ShowMessage(ToastType.Danger);
         }
 
     }
@@ -201,5 +201,18 @@
     {
         await modal.HideAsync();
     }
+    #endregion
+
+    #region Toasts
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Message = $"Ooops! Something went wrong...",
+    };
     #endregion
 }
