@@ -14,9 +14,9 @@
                 <EditForm Model="post" class="form-post" OnValidSubmit="CreatePostHandler">
                     <DataAnnotationsValidator />
                     <div class="content">
-                        <img src="/logo.png" alt="logo">
+                        <img src="@mediaAccount.Photo" alt="logo">
                         <div class="details">
-                            <p>CodingNepal</p>
+                            <p>@mediaAccount.UserName</p>
                             <div @onclick="()=>PrivacyClick(1)" class="privacy">
                                 <i class="fas fa-user-friends"></i>
                                 <span>@access</span>
@@ -172,7 +172,7 @@
         {
 
             var format = imageFile.ContentType;
-            var resizeImage = await imageFile.RequestImageFileAsync(format, 300, 300);
+            var resizeImage = await imageFile.RequestImageFileAsync(format, 700, 700);
             var buffer = new byte[resizeImage.Size];
             await resizeImage.OpenReadStream().ReadAsync(buffer);
             var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
@@ -215,4 +215,5 @@
         Message = $"Ooops! Something went wrong...",
     };
     #endregion
+
 }

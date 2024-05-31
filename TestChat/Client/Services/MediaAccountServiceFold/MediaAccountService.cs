@@ -15,20 +15,40 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
 
         public async Task<MediaAccount> GetAccountById(int id)
         {
-            return await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetById/{id}");
+            try
+            {
+                var mediaAccount = await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetById/{id}");
+                
+                if( mediaAccount == null )
+                {
+                    throw new Exception("Account wasn`t found");
+                }
+                return mediaAccount;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while fetching the post: {ex.Message}", ex);
+            }
+          
         }
 
         public async Task<MediaAccount> GetAccountByUserName(string userName)
         {
-            var account = await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetByUserName/{userName}");
-            if (account is not null)
+            try
             {
+                var account = await _httpClient.GetFromJsonAsync<MediaAccount>($"api/MediAccount/GetByUserName/{userName}");
+                if (account is  null)
+                {
+                    throw new Exception("Account wasn`t found");
+                }
                 return account;
             }
-            else
+            catch (Exception ex)
             {
-                return null;
+                throw new Exception($"An error occurred while fetching the post: {ex.Message}", ex);
             }
+            
+          
         }
 
         public async Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccountUpdate)

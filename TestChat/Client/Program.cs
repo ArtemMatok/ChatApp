@@ -4,6 +4,7 @@ using TestChat.Client;
 using TestChat.Client.Services.AccountService;
 using TestChat.Client.Services.MediaAccountServiceFold;
 using TestChat.Client.Services.MessageServiceFold;
+using TestChat.Client.Services.PostServiceFold;
 using TestChat.Client.Services.UserServ;
 using TestChat.Client.States;
 
@@ -17,4 +18,5 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMediaAccountService, MediaAccountService>();
 builder.Services.AddBlazorBootstrap();
+builder.Services.AddScoped<IPostService, PostService>();
 await builder.Build().RunAsync();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestChat.Server.Data.Entities;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Server.Data
 {
@@ -13,6 +14,7 @@ namespace TestChat.Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<MediaAccount> MediaAccounts { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -26,7 +26,7 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
 
         public async Task<MediaAccount> GetMediaAccountByUserName(string userName)
         {
-            return await  _context.MediaAccounts.FirstOrDefaultAsync(x => x.UserName == userName);
+            return await  _context.MediaAccounts.Include(x=>x.Posts).FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
         public bool Save()

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\PostComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Components\ChatDetail.razor.css" />
     <None Remove="Pages\Chat.razor.css" />
   </ItemGroup>
@@ -41,6 +45,14 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\fb-icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\PostComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\PostComponent.razor" />
   </ItemGroup>
 
 </Project>

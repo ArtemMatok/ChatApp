@@ -1,6 +1,7 @@
 ﻿@page "/profile/{UserName}"
 @inject IMediaAccountService _mediaAccountService
-  
+@using TestChat.Client.Components.Post   
+
 <div style="margin-top:50px" class="header__wrapper">
               
     <div class="cols__container">
@@ -9,14 +10,15 @@
                 <img src="@mediaAccount.Photo" alt="Anna Smith" />
                 <span></span>
             </div>
+            
             <h2>@mediaAccount.FullName  </h2>
             <p>@mediaAccount.UserName</p>
             
 
             <ul class="about">
-                <li><span>@mediaAccount.Followers.Count()</span>Followers</li>
-                <li><span>@mediaAccount.Following.Count()</span>Following</li>
-                <li><span>@mediaAccount.Posts.Count()</span>Photos</li>
+                <li><span>@(FormatNumberWithSpaces(mediaAccount.Followers.Count()))</span>Followers</li>
+                <li><span>@(FormatNumberWithSpaces(mediaAccount.Following.Count()))</span>Following</li>
+                <li><span>@(FormatNumberWithSpaces(mediaAccount.Posts.Count()))</span>Photos</li>
             </ul>
             <div style="margin-top:20px;" class="nav-profile">
 @*                 <button class="btn-main btn-main-primary">Follow</button> Твоя сторінка того нема кнопки підписатися
@@ -35,8 +37,7 @@
             {
                 @foreach (var item in mediaAccount.Posts)
                 {
-                    <img class="profile-img" src="@item.ImageUrl" alt="Photo" />
-
+                    <img @onclick="()=>ShowPostComponent(item.Id)" class="profile-img" src="@item.ImageUrl" alt="Photo" />
                 }
             }
             else
@@ -48,7 +49,7 @@
     </div>
 </div>
        
-
+<Modal @ref="modal" />
 @code{
     [Parameter]
     public string UserName { get; set; }
@@ -60,4 +61,23 @@
     {
         mediaAccount = await _mediaAccountService.GetAccountByUserName(UserName);
     }
+
+    public string FormatNumberWithSpaces(int number)
+    {
+        return number.ToString("N0").Replace(",", " ");
+    }
+
+
+
+    #region Modal
+    private Modal modal = default!;
+
+    private async Task ShowPostComponent(int postId)
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("PostId", postId);
+        parameters.Add("MediaAccountUserName", mediaAccount.UserName);
+        await modal.ShowAsync<PostComponent>(title: "Post", parameters: parameters);
+    }
+    #endregion
 }

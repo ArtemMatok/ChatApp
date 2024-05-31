@@ -18,5 +18,6 @@ namespace TestChat.Shared.Data.PostFold
 
         public string Access;
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public DateTime DateCreated { get; set; } = DateTime.Now;
     }
 }
