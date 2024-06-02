@@ -105,3 +105,12 @@ window.changeBackColor = (backColorNumber) => {
         changeBG();
     }
 }
+
+
+
+
+window.likeChange = () => {
+    document.querySelector('.content-heart').classList.toggle("heart-active");
+    
+    document.querySelector('.heart').classList.toggle("heart-active");
+}

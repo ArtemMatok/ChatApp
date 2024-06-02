@@ -30,5 +30,16 @@ namespace TestChat.Client.Services.PostServiceFold
                 throw new Exception($"An error occurred while fetching the post: {ex.Message}", ex);
             }
         }
+
+        public async Task<bool> UpdatePostByLike(Post post)
+        {
+            var result = await _httpClient.PutAsJsonAsync("api/Post/UpdatePostByLike", post);
+
+            if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

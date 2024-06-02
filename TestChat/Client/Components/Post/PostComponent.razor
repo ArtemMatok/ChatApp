@@ -1,5 +1,6 @@
 ﻿@inject IPostService _postService
 @inject IMediaAccountService _mediaAccount
+@inject IJSRuntime _jsRuntime
 
 @if (errorMessage == null || errorMessage.Length == 0)
 {
@@ -13,7 +14,7 @@
             </div>
             <div class="ingo">
                 <h3>@mediaAccount.FullName</h3>
-                <small>Dubai, @(()=> TimeAgo(post.DateCreated))</small>
+                <small>@(timeCreate!= null && timeCreate.Length != 0 ? $"{timeCreate}" : "")</small>
             </div>
 
         </div>
@@ -27,9 +28,38 @@
 
     <div class="action-buttons">
         <div class="interaction-buttons">
-            <span><i class="uil uil-heart"></i></span>
-            <span><i class="uil uil-comment-dots"></i></span>
-            <span><i class="uil uil-share-alt"></i></span>
+            @if (post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
+            {
+                <div @onclick="AddLike" class="span-post">
+
+                    <div class="heart-btn heart-active">
+                        <div class="content-heart heart-active">
+                            <span class="heart heart-active"></span>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div @onclick="AddLike" class="span-post">
+
+                    <div class="heart-btn">
+                        <div class="content-heart">
+                            <span class="heart"></span>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+        
+            
+       
+
+            <span style="margin-left:1.5rem;"><i class="uil uil-comment-dots"></i></span>
         </div>
         <div class="bookmark">
             <span><i class="uil uil-bookmark-full"></i></span>
@@ -40,11 +70,11 @@
         <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
         <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
         <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
-        <p>Liked by <b>Ernest Achiever</b> and <b>2,323 others</b></p>
+        <p>Liked by <b>@(FormatNumberWithSpaces(post.Likes))</b></p>
     </div>
 
     <div class="caption">
-        <p><b>@mediaAccount.FullName </b>@post.Title</p>
+        <p><b>@mediaAccount.FullName </b> @post.Title</p>
     </div>
     <div class="comments text-muted">View all @(FormatNumberWithSpaces(post.Comments.Count())) comments</div>
 </div>
@@ -57,13 +87,18 @@
     private Post post = new();
     private MediaAccount mediaAccount = new();
     private string errorMessage = null;
+    private string timeCreate = null;
+    private bool isLiked = false;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             post = await _postService.GetPostById(PostId);
+
             mediaAccount = await _mediaAccount.GetAccountByUserName(MediaAccountUserName);
+            timeCreate = TimeAgo(post.DateCreated);
+
 
         }
         catch (Exception ex)
@@ -78,15 +113,24 @@
         DateTime now = DateTime.Now;
         TimeSpan timeDifference = now - photoTime;
 
-        if (timeDifference.TotalHours > 24)
+        if (timeDifference.TotalHours > 24 && timeDifference.TotalDays <3)
         {
             int days = (int)timeDifference.TotalDays;
             return $"{days} day(s) ago";
         }
-        else
+        else if(timeDifference.TotalMinutes < 60 )
         {
             int minutes = (int)timeDifference.TotalMinutes;
             return $"{minutes} minute(s) ago";
+        }
+        else if(timeDifference.TotalMinutes> 60 && timeDifference.TotalHours <24)
+        {
+            int hours = (int)timeDifference.TotalHours;
+            return $"{hours} hour(s) ago";
+        }
+        else
+        {
+            return "";
         }
     }
 
@@ -94,5 +138,30 @@
     {
         return number.ToString("N0").Replace(",", " ");
     }
+
+
+    private async Task AddLike()
+    {
+        if(post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
+        {
+            await _jsRuntime.InvokeVoidAsync("window.likeChange");
+            post.Likes--;
+            var like = post.LikesList.Find(x => x.UserNameAccount == mediaAccount.UserName);
+            post.LikesList.Remove(like);
+            await _postService.UpdatePostByLike(post);
+            Console.WriteLine("- Like");
+        }
+        else
+        {
+            await _jsRuntime.InvokeVoidAsync("window.likeChange");
+            post.Likes++;
+            post.LikesList.Add(new Like(mediaAccount.UserName, post.Id));
+            await _postService.UpdatePostByLike(post);
+            Console.WriteLine("Like");
+        }
+
+    }
+
+
 }
 

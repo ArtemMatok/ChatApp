@@ -27,5 +27,27 @@ namespace TestChat.Server.Controllers
             }
             return Ok(post);    
         }
+
+        [HttpPut("UpdatePostByLike")]
+        public async Task<IActionResult> UpdatePostByLike(Post post)
+        {
+            if(post == null)
+            {
+                return BadRequest("Post is null");    
+            }
+
+            var result = await _postRepository.UpdatePostByLike(post);
+
+
+
+            if(result)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("Something went wrong");
+            }
+        }
     }
 }
