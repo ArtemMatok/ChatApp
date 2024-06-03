@@ -27,7 +27,7 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
         public async Task<bool> UpdatePostByLike(Post postUpdated)
         {
             var post = await GetPostById(postUpdated.Id);
-            post.Likes = postUpdated.Likes;
+            
             post.LikesList = postUpdated.LikesList;
             _context.Posts.Update(post);
             return Save();

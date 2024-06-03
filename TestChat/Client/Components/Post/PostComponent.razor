@@ -2,82 +2,94 @@
 @inject IMediaAccountService _mediaAccount
 @inject IJSRuntime _jsRuntime
 
-@if (errorMessage == null || errorMessage.Length == 0)
+
+@if (mediaAccount.Id != 0)
 {
-    <h2>@errorMessage</h2>
+    @if (errorMessage == null || errorMessage.Length == 0)
+    {
+        <h2>@errorMessage</h2>
+    }
+    <div class="feed">
+        <div class="head">
+            <div class="user">
+                <div class="profile-photo">
+                    <img src="@mediaAccount.Photo" alt="Alternate Text" />
+                </div>
+                <div class="ingo">
+                    <h3>@mediaAccount.FullName</h3>
+                    <small>@(timeCreate!= null && timeCreate.Length != 0 ? $"{timeCreate}" : "")</small>
+                </div>
+
+            </div>
+            <span class="edit">
+                <i class="uil uil-ellipsis-h"></i>
+            </span>
+        </div>
+        <div class="photo">
+            <img src="@post.ImageUrl" alt="Alternate Text" />
+        </div>
+
+        <div class="action-buttons">
+            <div class="interaction-buttons">
+                @if (post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
+                {
+                    <div @onclick="AddLike" class="span-post">
+
+                        <div class="heart-btn heart-active">
+                            <div class="content-heart heart-active">
+                                <span class="heart heart-active"></span>
+
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div @onclick="AddLike" class="span-post">
+
+                        <div class="heart-btn">
+                            <div class="content-heart">
+                                <span class="heart"></span>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+
+
+
+            </div>
+            <div class="bookmark">
+                <span><i class="uil uil-comment-dots"></i></span>
+            </div>
+        </div>
+
+        <div class="liked-by">
+            @foreach (var item in mediaAccountLikes.Take(3))
+            {
+                <span><img src="@item.Photo" alt="Alternate Text" /></span>
+
+            }
+            <p>Liked by <b>@(FormatNumberWithSpaces(post.Likes))</b></p>
+        </div>
+
+        <div class="caption">
+            <p><b>@mediaAccount.FullName </b> @post.Title</p>
+        </div>
+        <div class="comments text-muted">View all @(FormatNumberWithSpaces(post.Comments.Count())) comments</div>
+    </div>
 }
-<div class="feed">
-    <div class="head">
-        <div class="user">
-            <div class="profile-photo">
-                <img src="@mediaAccount.Photo" alt="Alternate Text" />
-            </div>
-            <div class="ingo">
-                <h3>@mediaAccount.FullName</h3>
-                <small>@(timeCreate!= null && timeCreate.Length != 0 ? $"{timeCreate}" : "")</small>
-            </div>
-
-        </div>
-        <span class="edit">
-            <i class="uil uil-ellipsis-h"></i>
-        </span>
+else
+{
+    <div class="d-flex justify-content-center">
+        <Spinner Type="SpinnerType.Border" />
     </div>
-    <div class="photo">
-        <img src="@post.ImageUrl" alt="Alternate Text" />
-    </div>
+}
 
-    <div class="action-buttons">
-        <div class="interaction-buttons">
-            @if (post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
-            {
-                <div @onclick="AddLike" class="span-post">
-
-                    <div class="heart-btn heart-active">
-                        <div class="content-heart heart-active">
-                            <span class="heart heart-active"></span>
-
-
-                        </div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div @onclick="AddLike" class="span-post">
-
-                    <div class="heart-btn">
-                        <div class="content-heart">
-                            <span class="heart"></span>
-
-
-                        </div>
-                    </div>
-                </div>
-
-            }
-        
-            
-       
-
-            <span style="margin-left:1.5rem;"><i class="uil uil-comment-dots"></i></span>
-        </div>
-        <div class="bookmark">
-            <span><i class="uil uil-bookmark-full"></i></span>
-        </div>
-    </div>
-
-    <div class="liked-by">
-        <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
-        <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
-        <span><img src="https://i.ibb.co/DWz457P/profile-10.jpg" alt="Alternate Text" /></span>
-        <p>Liked by <b>@(FormatNumberWithSpaces(post.Likes))</b></p>
-    </div>
-
-    <div class="caption">
-        <p><b>@mediaAccount.FullName </b> @post.Title</p>
-    </div>
-    <div class="comments text-muted">View all @(FormatNumberWithSpaces(post.Comments.Count())) comments</div>
-</div>
 @code {
     [Parameter]
     public int PostId { get; set; }
@@ -89,6 +101,7 @@
     private string errorMessage = null;
     private string timeCreate = null;
     private bool isLiked = false;
+    private List<MediaAccount> mediaAccountLikes = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,8 +111,11 @@
 
             mediaAccount = await _mediaAccount.GetAccountByUserName(MediaAccountUserName);
             timeCreate = TimeAgo(post.DateCreated);
-
-
+            mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.Id);
+            foreach (var item in mediaAccountLikes)
+            {
+                Console.WriteLine(item.UserName);
+            }
         }
         catch (Exception ex)
         {
@@ -108,22 +124,22 @@
     }
 
 
-    private  string TimeAgo(DateTime photoTime)
+    private string TimeAgo(DateTime photoTime)
     {
         DateTime now = DateTime.Now;
         TimeSpan timeDifference = now - photoTime;
 
-        if (timeDifference.TotalHours > 24 && timeDifference.TotalDays <3)
+        if (timeDifference.TotalHours > 24 && timeDifference.TotalDays < 3)
         {
             int days = (int)timeDifference.TotalDays;
             return $"{days} day(s) ago";
         }
-        else if(timeDifference.TotalMinutes < 60 )
+        else if (timeDifference.TotalMinutes < 60)
         {
             int minutes = (int)timeDifference.TotalMinutes;
             return $"{minutes} minute(s) ago";
         }
-        else if(timeDifference.TotalMinutes> 60 && timeDifference.TotalHours <24)
+        else if (timeDifference.TotalMinutes > 60 && timeDifference.TotalHours < 24)
         {
             int hours = (int)timeDifference.TotalHours;
             return $"{hours} hour(s) ago";
@@ -142,23 +158,21 @@
 
     private async Task AddLike()
     {
-        if(post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
+        var like = post.LikesList.FirstOrDefault(x => x.UserNameAccount == mediaAccount.UserName);
+
+        if (like != null)
         {
-            await _jsRuntime.InvokeVoidAsync("window.likeChange");
-            post.Likes--;
-            var like = post.LikesList.Find(x => x.UserNameAccount == mediaAccount.UserName);
             post.LikesList.Remove(like);
-            await _postService.UpdatePostByLike(post);
-            Console.WriteLine("- Like");
+
         }
         else
         {
-            await _jsRuntime.InvokeVoidAsync("window.likeChange");
-            post.Likes++;
             post.LikesList.Add(new Like(mediaAccount.UserName, post.Id));
-            await _postService.UpdatePostByLike(post);
-            Console.WriteLine("Like");
         }
+
+        await _jsRuntime.InvokeVoidAsync("window.likeChange");
+        await _postService.UpdatePostByLike(post);
+        mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.Id);
 
     }
 

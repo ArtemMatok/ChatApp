@@ -1,55 +1,65 @@
 ﻿@page "/profile/{UserName}"
 @inject IMediaAccountService _mediaAccountService
-@using TestChat.Client.Components.Post   
+@using TestChat.Client.Components.Post
+@if (mediaAccount.Id != 0)
+{
+    <div style="margin-top:50px" class="header__wrapper">
 
-<div style="margin-top:50px" class="header__wrapper">
-              
-    <div class="cols__container">
-        <div class="left__col">
-            <div class="img__container">
-                <img src="@mediaAccount.Photo" alt="Anna Smith" />
-                <span></span>
+        <div class="cols__container">
+            <div class="left__col">
+                <div class="img__container">
+                    <img src="@mediaAccount.Photo" alt="Anna Smith" />
+                    <span></span>
+                </div>
+
+                <h2>@mediaAccount.FullName  </h2>
+                <p>@mediaAccount.UserName</p>
+
+
+                <ul class="about">
+                    <li><span>@(FormatNumberWithSpaces(mediaAccount.Followers.Count()))</span>Followers</li>
+                    <li><span>@(FormatNumberWithSpaces(mediaAccount.Following.Count()))</span>Following</li>
+                    <li><span>@(FormatNumberWithSpaces(mediaAccount.Posts.Count()))</span>Photos</li>
+                </ul>
+                <div style="margin-top:20px;" class="nav-profile">
+                    @*                 <button class="btn-main btn-main-primary">Follow</button> Твоя сторінка того нема кнопки підписатися
+                    *@
+                </div>
+                <div class="content">
+                    <p>
+                        @mediaAccount.Description
+                    </p>
+                </div>
             </div>
-            
-            <h2>@mediaAccount.FullName  </h2>
-            <p>@mediaAccount.UserName</p>
-            
 
-            <ul class="about">
-                <li><span>@(FormatNumberWithSpaces(mediaAccount.Followers.Count()))</span>Followers</li>
-                <li><span>@(FormatNumberWithSpaces(mediaAccount.Following.Count()))</span>Following</li>
-                <li><span>@(FormatNumberWithSpaces(mediaAccount.Posts.Count()))</span>Photos</li>
-            </ul>
-            <div style="margin-top:20px;" class="nav-profile">
-@*                 <button class="btn-main btn-main-primary">Follow</button> Твоя сторінка того нема кнопки підписатися
- *@            </div>
-           <div class="content">
-                <p>
-                    @mediaAccount.Description
-                </p>
-            </div> 
         </div>
-
-    </div>
-    <div class="right__col">
-        <div class="photos">
-            @if(mediaAccount.Posts.Count != 0)
-            {
-                @foreach (var item in mediaAccount.Posts)
+        <div class="right__col">
+            <div class="photos">
+                @if (mediaAccount.Posts.Count != 0)
                 {
-                    <img @onclick="()=>ShowPostComponent(item.Id)" class="profile-img" src="@item.ImageUrl" alt="Photo" />
+                    @foreach (var item in mediaAccount.Posts)
+                    {
+                        <img @onclick="()=>ShowPostComponent(item.Id)" class="profile-img" src="@item.ImageUrl" alt="Photo" />
+                    }
                 }
-            }
-            else
-            {
-                <h7>When you share photos, they will appear on your profile.</h7>
-            }
-           
+                else
+                {
+                    <h7>When you share photos, they will appear on your profile.</h7>
+                }
+
+            </div>
         </div>
     </div>
-</div>
-       
-<Modal @ref="modal" />
+
+    <Modal UseStaticBackdrop="true" @ref="modal" />
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <Spinner Type="SpinnerType.Border" />
+    </div>
+}
+
 @code{
     [Parameter]
     public string UserName { get; set; }

@@ -51,6 +51,20 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
           
         }
 
+        public async Task<List<MediaAccount>> GetMediaAccountsByPost(int id)
+        {
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<List<MediaAccount>>($"api/MediAccount/GetMediaAccountByPost/{id}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"An error occurred while getting  Meida Accounts: {ex.Message}", ex);
+            }
+        }
+
         public async Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccountUpdate)
         {
             var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateAccount/{userName}", mediaAccountUpdate);

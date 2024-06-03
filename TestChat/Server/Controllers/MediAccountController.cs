@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TestChat.Server.Data.Entities;
 using TestChat.Server.Repositories.AccountRepositoryFolder;
 using TestChat.Server.Repositories.MediaAccountRepositoryFold;
+using TestChat.Server.Repositories.PostRepositoryFold;
 using TestChat.Shared.Data;
 using TestChat.Shared.Data.PostFold;
 
@@ -14,10 +15,12 @@ namespace TestChat.Server.Controllers
     {
         private readonly IMediaAccountRepository _mediaAccountRepository;
         private readonly IAccountRepository _accountRepository;
-        public MediAccountController(IMediaAccountRepository mediaAccountRepository, IAccountRepository accountRepository)
+        private readonly IPostRepository _postRepository;
+        public MediAccountController(IMediaAccountRepository mediaAccountRepository, IAccountRepository accountRepository, IPostRepository postRepository)
         {
             _mediaAccountRepository = mediaAccountRepository;
             _accountRepository = accountRepository;
+            _postRepository = postRepository;
         }
 
         [HttpGet("GetById/{id}")]
@@ -92,6 +95,21 @@ namespace TestChat.Server.Controllers
             _mediaAccountRepository.Update(mediaAccount);
             return Ok("Update Success");
 
+        }
+
+
+        [HttpGet("GetMediaAccountByPost/{id}")]
+        public async Task<ActionResult<MediaAccount>> GetMediaAccountByPost(int id)
+        {
+            var post = await _postRepository.GetPostById(id);
+            if (post is null)
+            {
+                return BadRequest("Post is null");
+            }
+
+            var result = await _mediaAccountRepository.GetMediaAccountLikeByPost(post);
+
+            return Ok(result);
         }
     }
 }

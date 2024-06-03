@@ -1313,6 +1313,7 @@ main .container-main .right {
                 flex-direction: column;
                 color: #818181;
                 font-size: 0.9rem;
+                margin-right:15px;
             }
 
                 .header__wrapper .cols__container .left__col .about li span {
@@ -1721,8 +1722,8 @@ main .container-main .right {
     background-size: 2900%;
     height: 70px;
     width: 70px;
-    top: 50%;
-    left: 21%;
+    top: -60%;
+    left: 35%;
     transform: translate(-50%,-50%);
 }
 

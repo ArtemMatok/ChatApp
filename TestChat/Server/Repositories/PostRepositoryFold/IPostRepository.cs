@@ -7,6 +7,6 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
         Task<Post> GetPostById(int id);
         bool Save();
         Task<bool> UpdatePostByLike(Post post);
-       
+      
     }
 }

@@ -3,101 +3,110 @@
 @inject NavigationManager _navManager
 @inject IJSRuntime _jsRuntime
 
-<a @onclick="ProfilePageClick"  style="text-decoration:none;" class="profile">
-    <div class="profile-photo">
-        <img src="@mediaAccount.Photo" alt="Alternate Text" />
-    </div>
-    <div class="handle">
-        <h4 style="color:black">@mediaAccount.FullName</h4>
-        <p class="text-muted">
-            @@@mediaAccount.UserName
-        </p>
-    </div>
-</a>
-
-
-
-<div class="sidebar">
-    <a style="text-decoration:none;color:black;" class="menu-item active">
-        <span><i class="uil uil-home"></i></span><h3>Home</h3>
-    </a>
-    <a @onclick="CreatePost" style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-plus-circle"></i></span><h3>Create</h3>
-    </a>
-    @* <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
-    </a> *@
-    <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-bell"><small class="notification-count">9+</small></i></span><h3>Notifications</h3>
-
-        <div class="notifications-popup">
-            <div>
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="notification-body">
-                    <b>Full Name</b> accepted your friend request
-                    <small class="text-muted">2 DAYS AGO</small>
-                </div>
-            </div>
-            <div>
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="notification-body">
-                    <b>Full Name</b> accepted your friend request
-                    <small class="text-muted">2 DAYS AGO</small>
-                </div>
-            </div>
-            <div>
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="notification-body">
-                    <b>Full Name</b> accepted your friend request
-                    <small class="text-muted">2 DAYS AGO</small>
-                </div>
-            </div>
-            <div>
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="notification-body">
-                    <b>Full Name</b> accepted your friend request
-                    <small class="text-muted">2 DAYS AGO</small>
-                </div>
-            </div>
-            <div>
-                <div class="profile-photo">
-                    <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
-                </div>
-                <div class="notification-body">
-                    <b>Full Name</b> accepted your friend request
-                    <small class="text-muted">2 DAYS AGO</small>
-                </div>
-            </div>
+@if (mediaAccount.Id != 0)
+{
+    <a @onclick="ProfilePageClick" style="text-decoration:none;" class="profile">
+        <div class="profile-photo">
+            <img src="@mediaAccount.Photo" alt="Alternate Text" />
+        </div>
+        <div class="handle">
+            <h4 style="color:black">@mediaAccount.FullName</h4>
+            <p class="text-muted">
+                @@@mediaAccount.UserName
+            </p>
         </div>
     </a>
-    <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-envelope-alt"><small class="notification-count">6</small></i></span><h3>Message</h3>
-    </a>
-    <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
-    </a>
-    <a style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-chart-line"></i></span><h3>Analytics</h3>
 
-    </a>
 
-    <a @onclick="ThemeButtonClicked" style="text-decoration:none;color:black;" class="menu-item" id="theme">
-        <span><i class="uil uil-palette" ></i></span><h3>Theme</h3>
-    </a>
 
-    <a @onclick="ShowEditProfile" style="text-decoration:none;color:black;" class="menu-item">
-        <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
-    </a>
+    <div class="sidebar">
+        <a style="text-decoration:none;color:black;" class="menu-item active">
+            <span><i class="uil uil-home"></i></span><h3>Home</h3>
+        </a>
+        <a @onclick="CreatePost" style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-plus-circle"></i></span><h3>Create</h3>
+        </a>
+        @* <a style="text-decoration:none;color:black;" class="menu-item">
+                <span><i class="uil uil-compass"></i></span><h3>Explore</h3>
+            </a> *@
+        <a style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-bell"><small class="notification-count">9+</small></i></span><h3>Notifications</h3>
 
-</div>
+            <div class="notifications-popup">
+                <div>
+                    <div class="profile-photo">
+                        <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
+                    </div>
+                    <div class="notification-body">
+                        <b>Full Name</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-photo">
+                        <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
+                    </div>
+                    <div class="notification-body">
+                        <b>Full Name</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-photo">
+                        <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
+                    </div>
+                    <div class="notification-body">
+                        <b>Full Name</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-photo">
+                        <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
+                    </div>
+                    <div class="notification-body">
+                        <b>Full Name</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-photo">
+                        <img src="https://i.ibb.co/2N5vMHT/profile-2.jpg" alt="Alternate Text" />
+                    </div>
+                    <div class="notification-body">
+                        <b>Full Name</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-envelope-alt"><small class="notification-count">6</small></i></span><h3>Message</h3>
+        </a>
+        <a style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-bookmark"></i></span><h3>Bookmarks</h3>
+        </a>
+        <a style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-chart-line"></i></span><h3>Analytics</h3>
+
+        </a>
+
+        <a @onclick="ThemeButtonClicked" style="text-decoration:none;color:black;" class="menu-item" id="theme">
+            <span><i class="uil uil-palette"></i></span><h3>Theme</h3>
+        </a>
+
+        <a @onclick="ShowEditProfile" style="text-decoration:none;color:black;" class="menu-item">
+            <span><i class="uil uil-setting"></i></span><h3>Settings</h3>
+        </a>
+
+    </div>
+}
+else
+{
+    <Spinner Class="me-3" Type="SpinnerType.Dots" Color="SpinnerColor.Dark" Size="SpinnerSize.Large" />
+
+}
+
 
 
 
@@ -105,21 +114,19 @@
 
 @code{
 
-    //TO DO 
-    //Зробити шоб зміна шрифта і коліру відкривалась тут
 
 
 
     [Parameter]
     public EventCallback OnThemeButtonClick { get; set; }
- 
+
 
     private void ThemeButtonClicked()
     {
         OnThemeButtonClick.InvokeAsync(null);
     }
 
-   
+
 
 
 
@@ -139,6 +146,7 @@
         mediaAccount = await _accountMediaService.GetAccountById(AuthState.User.Id);
 
     }
+
     private async Task ShowEditProfile()
     {
         _navManager.NavigateTo($"/EditProfile/{mediaAccount.UserName}");

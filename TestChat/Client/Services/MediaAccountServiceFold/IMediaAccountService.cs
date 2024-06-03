@@ -10,5 +10,6 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
         Task<MediaAccount> GetAccountByUserName(string userName);
         Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccount);
         Task<bool> UpdateMediaAccountByPost(string userName, Post post);
+        Task<List<MediaAccount>> GetMediaAccountsByPost(int id);
     }
 }

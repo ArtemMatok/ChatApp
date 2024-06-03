@@ -2,6 +2,7 @@
 using TestChat.Server.Data;
 using TestChat.Server.Data.Entities;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
 {
@@ -27,6 +28,23 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
         public async Task<MediaAccount> GetMediaAccountByUserName(string userName)
         {
             return await  _context.MediaAccounts.Include(x=>x.Posts).FirstOrDefaultAsync(x => x.UserName == userName);
+        }
+
+        public async Task<List<MediaAccount>> GetMediaAccountLikeByPost(Post post)
+        {
+            var mediaAccountList = new List<MediaAccount>();
+
+            if(post.LikesList == null || post.LikesList.Count== 0)
+            {
+                return mediaAccountList;
+            }
+
+            foreach (var item in post.LikesList)
+            {
+                var mediaAccount = await GetMediaAccountByUserName(item.UserNameAccount);
+                mediaAccountList.Add(mediaAccount); 
+            }
+            return mediaAccountList;    
         }
 
         public bool Save()
