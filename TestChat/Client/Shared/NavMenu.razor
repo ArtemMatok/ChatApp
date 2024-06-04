@@ -9,9 +9,9 @@
    
     <div class="create">
         <button @onclick="HandleLogout"  class="btn-main btn-main-primary" for="create-post">Logout</button>
-        <div class="profile-photo">
+        <div @onclick="MoveToMainPage" style="cursor:pointer;" class="profile-photo">
           
-                <img src="@mediaAccount.Photo" alt="Alternate Text" />
+                <img  src="@mediaAccount.Photo" alt="Alternate Text" />
             
         </div>
     </div>
@@ -46,5 +46,8 @@
     }
 
 
-
+    private void MoveToMainPage()
+    {
+        _navManager.NavigateTo($"/profile/{mediaAccount.UserName}");
+    }
 }

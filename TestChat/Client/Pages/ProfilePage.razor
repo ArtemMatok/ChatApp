@@ -1,6 +1,8 @@
 ﻿@page "/profile/{UserName}"
 @inject IMediaAccountService _mediaAccountService
 @using TestChat.Client.Components.Post
+
+
 @if (mediaAccount.Id != 0)
 {
     <div style="margin-top:50px" class="header__wrapper">

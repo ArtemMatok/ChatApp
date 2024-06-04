@@ -18,7 +18,7 @@ namespace TestChat.Shared.Data.PostFold
         public List<Like> LikesList { get; set; } = new List<Like>();
         public int Likes => LikesList.Count;
 
-        public string Access;
+        public string Access { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public DateTime DateCreated { get; set; } = DateTime.Now;
     }

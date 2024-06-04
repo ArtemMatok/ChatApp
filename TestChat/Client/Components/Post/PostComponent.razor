@@ -21,7 +21,7 @@
                 </div>
 
             </div>
-            <span class="edit">
+            <span style="cursor:pointer;" @onclick="ShowEmployeeComponent" class="edit">
                 <i class="uil uil-ellipsis-h"></i>
             </span>
         </div>
@@ -82,6 +82,8 @@
         </div>
         <div class="comments text-muted">View all @(FormatNumberWithSpaces(post.Comments.Count())) comments</div>
     </div>
+
+    <Modal Style="height:700px" UseStaticBackdrop="true" @ref="modal" />
 }
 else
 {
@@ -175,6 +177,19 @@ else
         mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.Id);
 
     }
+
+
+    #region Modal
+    private Modal modal = default!;
+
+    private async Task ShowEmployeeComponent()
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("PostId", PostId);
+        parameters.Add("UserName", MediaAccountUserName);
+        await modal.ShowAsync<EditPostComponent>(title: "Employee Details", parameters:parameters);
+    }
+    #endregion
 
 
 }

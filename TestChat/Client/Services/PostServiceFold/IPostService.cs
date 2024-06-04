@@ -6,5 +6,7 @@ namespace TestChat.Client.Services.PostServiceFold
     {
         Task<Post> GetPostById(int id);
         Task<bool> UpdatePostByLike(Post post);
+        Task<bool> DeletePost(int postId);
+        Task<bool> UpdatePost(int postId, Post post);
     }
 }

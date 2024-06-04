@@ -12,6 +12,16 @@ namespace TestChat.Client.Services.PostServiceFold
             _httpClient = httpClient;
         }
 
+        public async Task<bool> DeletePost(int postId)
+        {
+            var result = await _httpClient.DeleteAsync($"api/Post/DeletePost/{postId}");
+           if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<Post> GetPostById(int id)
         {
             try
@@ -29,6 +39,17 @@ namespace TestChat.Client.Services.PostServiceFold
 
                 throw new Exception($"An error occurred while fetching the post: {ex.Message}", ex);
             }
+        }
+
+        public async Task<bool> UpdatePost(int postId, Post post)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/Post/Update/{postId}", post);
+
+            if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> UpdatePostByLike(Post post)

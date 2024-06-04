@@ -1,0 +1,200 @@
+﻿@page "/update-post/{PostId:int}/{UserName}"
+@layout EmptyLayout
+@inject IMediaAccountService _mediaAccountService
+@inject IPostService _postService
+@inject IJSRuntime _jsRuntime
+@inject NavigationManager _navManager
+
+
+@if (mediaAccount.Id != 0)
+{
+    <div class="body-create">
+        <div class="container-create @(isPrivacyClick ?"active":"")">
+            <div class="wrapper">
+                <section class="post">
+
+                    <header @onclick="BackClick"><button class="btn-main btn-main-primary">Back</button></header>
+
+                    <EditForm Model="post" class="form-post" OnValidSubmit="UpdatePostHandler">
+                        <DataAnnotationsValidator />
+                        <div class="content">
+                            <img src="@mediaAccount.Photo" alt="logo">
+                            <div class="details">
+                                <p>@mediaAccount.UserName</p>
+                                <div @onclick="()=>PrivacyClick(1)" class="privacy">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span>@access</span>
+                                    <i class="fas fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <InputTextArea @bind-Value="post.Title" placeholder="What's on your mind?" spellcheck="false" required />
+
+                        <div class="options">
+                            <p>Add to Your Post</p>
+                            <ul class="list">
+
+                                <li @onclick="OnShowModalClick"><img src="/more.svg" alt="gallery"></li>
+
+                            </ul>
+                        </div>
+
+                        <button>Update</button>
+                    </EditForm>
+                </section>
+                <section class="audience">
+                    <header>
+                        <div @onclick="()=>PrivacyClick(2)" class="arrow-back"><i class="fas fa-arrow-left"></i></div>
+                        <p>Select Audience</p>
+                    </header>
+                    <div class="content">
+                        <p>Who can see your post?</p>
+                        <span>Your post will show up in News Feed, on your profile and in search results.</span>
+                    </div>
+                    <ul class="list">
+                        <li @onclick="()=>AccessClick(1)" class="@(accessNumber == 1? "active" : "")">
+                            <div class="column">
+                                <div class="icon"><i class="fas fa-globe-asia"></i></div>
+                                <div class="details">
+                                    <p>Public</p>
+                                    <span>Anyone on or off Facebook</span>
+                                </div>
+                            </div>
+                            <div class="radio"></div>
+                        </li>
+                        <li @onclick="()=>AccessClick(2)" class="@(accessNumber == 2? "active" : "")">
+                            <div class="column">
+                                <div class="icon"><i class="fas fa-user-friends"></i></div>
+                                <div class="details">
+                                    <p>Friends</p>
+                                    <span>Your friends on Facebook</span>
+                                </div>
+                            </div>
+                            <div class="radio"></div>
+                        </li>
+
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <Spinner Type="SpinnerType.Border" />
+    </div>
+}
+
+
+
+<Modal @ref="modal" Title="Yout Photo">
+    <BodyTemplate>
+        <img src="@post.ImageUrl" />
+    </BodyTemplate>
+
+</Modal>
+
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" Delay="6000" />
+@code {
+    [Parameter]
+    public int PostId { get; set; }
+    [Parameter]
+    public string UserName { get; set; }
+
+    private bool isPrivacyClick = false;
+    private Post post = new Post();
+    private string access { get; set; }
+    private ElementReference fileInput;
+    private MediaAccount mediaAccount = new();
+    private int accessNumber = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        post = await _postService.GetPostById(PostId);
+        mediaAccount = await _mediaAccountService.GetAccountByUserName(UserName);
+        access = post.Access;
+    }
+
+
+    private void PrivacyClick(int numberOfClick)
+    {
+        if (numberOfClick == 1)
+        {
+            isPrivacyClick = true;
+        }
+        else
+        {
+            isPrivacyClick = false;
+        }
+
+    }
+
+    private async Task UpdatePostHandler()
+    {
+        post.Access = access;
+
+        var result = await _postService.UpdatePost(PostId, post);
+        if (result)
+        {
+            _navManager.NavigateTo($"/main-page/{UserName}");
+        }
+        else
+        {
+            ShowMessage(ToastType.Danger);
+        }
+
+    }
+
+    private void AccessClick(int numberClick)
+    {
+        if (numberClick == 1)
+        {
+            accessNumber = 1;
+            access = "Public";
+        }
+        else
+        {
+            accessNumber = 2;
+            access = "Friends";
+        }
+    }
+
+    private void BackClick()
+    {
+        _navManager.NavigateTo($"/profile/{UserName}");
+    }
+
+
+
+
+
+
+    #region Modal
+    private Modal modal = default!;
+
+    private async Task OnShowModalClick()
+    {
+        await modal.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal.HideAsync();
+    }
+    #endregion
+
+    #region Toasts
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Message = $"Ooops! Something went wrong...",
+    };
+    #endregion
+
+}

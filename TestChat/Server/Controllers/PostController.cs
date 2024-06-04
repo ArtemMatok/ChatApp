@@ -49,5 +49,43 @@ namespace TestChat.Server.Controllers
                 return BadRequest("Something went wrong");
             }
         }
+
+
+        [HttpDelete("DeletePost/{postId}")]
+        public async Task<IActionResult> DeletePost(int postId)
+        {
+            var post = await _postRepository.GetPostById(postId);
+            if(post == null)
+            {
+                return BadRequest("Post wasn`t found");
+            }
+            if(_postRepository.Delete(post))
+            {
+                return Ok("Post was deleted");
+            }
+            return BadRequest("Something going wrong");
+        }
+
+        [HttpPut("Update/{postId}")]
+        public async Task<IActionResult> UpdatePost(int postId, Post postUpdated)
+        {
+            var post = await _postRepository.GetPostById(postId);
+            if(post == null)
+            {
+                return BadRequest("Post wasn`t found");
+            }
+            post.Title = postUpdated.Title;
+            post.Access = postUpdated.Access;
+            
+            if(_postRepository.Update(post))
+            {
+                return Ok("Update Success");
+            }
+            else
+            {
+                return BadRequest("Something went wrong");
+            }
+
+        }
     }
 }

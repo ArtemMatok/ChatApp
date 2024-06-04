@@ -5,8 +5,9 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
     public interface IPostRepository
     {
         Task<Post> GetPostById(int id);
-        bool Save();
         Task<bool> UpdatePostByLike(Post post);
-      
+        bool Save();
+        bool Delete(Post post);
+        bool Update(Post post);
     }
 }

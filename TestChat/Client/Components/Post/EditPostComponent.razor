@@ -1,0 +1,73 @@
+﻿@inject NavigationManager _navManager
+@inject IPostService _postService
+
+
+<div class="body-create">
+    <div style="height:400px; margin-top:-40%;" class="container-create active">
+        <div class="wrapper">
+
+            <section class="audience">
+
+                <ul class="list">
+                    <li @onclick="EditClick">
+                        <div class="column">
+                            <div class="icon"><i class="fas fa-edit"></i></div>
+                            <div class="details">
+                                <p>Edit</p>
+                                <span>Edit your post</span>
+                            </div>
+                        </div>
+                        @*<div class="radio"></div>*@
+                    </li>
+                    <li @onclick="ShowConfirmationAsync">
+                        <div class="column">
+                            <div class="icon"><i class="fas fa-times"></i></div>
+                            <div class="details">
+                                <p>Delete</p>
+                                <span>Delete your post</span>
+                            </div>
+                        </div>
+                        @*<div class="radio"></div>*@
+                    </li>
+
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+
+<ConfirmDialog @ref="dialog" />
+
+
+@code{
+    [Parameter]
+    public int PostId { get; set; }
+    [Parameter]
+    public string UserName { get; set; }
+
+    #region DeleteConfirm
+    private ConfirmDialog dialog = default!;
+
+    private async Task ShowConfirmationAsync()
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to delete this?",
+            message1: "This will delete the record. Once deleted can not be rolled back.",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            if(await _postService.DeletePost(PostId))
+            {
+                _navManager.NavigateTo($"main-page/{UserName}");
+            }
+        }
+        else
+        {
+            // do something
+        }
+    }
+    #endregion
+
+    private void EditClick() => _navManager.NavigateTo($"update-post/{PostId}/{UserName}");
+}
