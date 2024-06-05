@@ -21,7 +21,7 @@
                 </div>
 
             </div>
-            <span style="cursor:pointer;" @onclick="ShowEmployeeComponent" class="edit">
+            <span style="cursor:pointer;" @onclick="ShowPostComponent" class="edit">
                 <i class="uil uil-ellipsis-h"></i>
             </span>
         </div>
@@ -63,7 +63,7 @@
 
 
             </div>
-            <div class="bookmark">
+            <div @onclick="ShowCommentComponent" style="cursor:pointer;" class="bookmark">
                 <span><i class="uil uil-comment-dots"></i></span>
             </div>
         </div>
@@ -80,10 +80,10 @@
         <div class="caption">
             <p><b>@mediaAccount.FullName </b> @post.Title</p>
         </div>
-        <div class="comments text-muted">View all @(FormatNumberWithSpaces(post.Comments.Count())) comments</div>
     </div>
 
     <Modal Style="height:700px" UseStaticBackdrop="true" @ref="modal" />
+    <Modal @ref="modalComment" UseStaticBackdrop="true"/>
 }
 else
 {
@@ -182,15 +182,24 @@ else
     #region Modal
     private Modal modal = default!;
 
-    private async Task ShowEmployeeComponent()
+    private async Task ShowPostComponent()
     {
         var parameters = new Dictionary<string, object>();
         parameters.Add("PostId", PostId);
         parameters.Add("UserName", MediaAccountUserName);
-        await modal.ShowAsync<EditPostComponent>(title: "Employee Details", parameters:parameters);
+        await modal.ShowAsync<EditPostComponent>(title: "Post Details", parameters: parameters);
     }
     #endregion
 
+    #region ModalComment
+    private Modal modalComment = default!;
 
+    private async Task ShowCommentComponent()
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("EmployeeId", 321);
+        await modalComment.ShowAsync<TestChat.Client.Components.Post.CommentFold.CommentComponent>(title: "Comment");
+    }
+    #endregion
 }
 

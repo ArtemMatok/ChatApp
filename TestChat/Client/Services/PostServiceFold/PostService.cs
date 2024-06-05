@@ -52,6 +52,17 @@ namespace TestChat.Client.Services.PostServiceFold
             return false;
         }
 
+        public async Task<bool> UpdatePostByComment(Post post)
+        {
+            var result = await _httpClient.PutAsJsonAsync("api/Post/UpdatePostByPost", post);
+
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> UpdatePostByLike(Post post)
         {
             var result = await _httpClient.PutAsJsonAsync("api/Post/UpdatePostByLike", post);

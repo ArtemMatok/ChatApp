@@ -13,7 +13,7 @@ namespace TestChat.Shared.Data.PostFold
         public MediaAccount CommentSender { get; set; }
         [Required(ErrorMessage = "Message is required")]
         public string Content { get; set; }
-
+        public int Like { get; set; } = 0;
 
     }
 }

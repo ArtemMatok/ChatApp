@@ -36,10 +36,27 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
             return Save();
         }
 
+        public async Task<bool> UpdatePostByComment(Post postUpdated)
+        {
+            var post = await GetPostById(postUpdated.Id);
+            if (post == null)
+            {
+                return false;
+            }
+
+            post.Comments = postUpdated.Comments;
+            _context.Posts.Update(post);
+            return Save();
+        }
+
         public async Task<bool> UpdatePostByLike(Post postUpdated)
         {
             var post = await GetPostById(postUpdated.Id);
-            
+            if(post == null)
+            {
+                return false;
+            }
+
             post.LikesList = postUpdated.LikesList;
             _context.Posts.Update(post);
             return Save();
