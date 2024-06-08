@@ -41,7 +41,7 @@
                 {
                     @foreach (var item in mediaAccount.Posts)
                     {
-                        <img @onclick="()=>ShowPostComponent(item.Id)" class="profile-img" src="@item.ImageUrl" alt="Photo" />
+                        <img @onclick="()=>ShowPostComponent(item.PostId)" class="profile-img" src="@item.ImageUrl" alt="Photo" />
                     }
                 }
                 else

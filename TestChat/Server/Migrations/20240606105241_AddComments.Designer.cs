@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestChat.Server.Data;
 
@@ -11,9 +12,11 @@ using TestChat.Server.Data;
 namespace TestChat.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240606105241_AddComments")]
+    partial class AddComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,48 +120,26 @@ namespace TestChat.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CommentSenderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MediaAccountPhoto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PostId")
+                    b.Property<int>("Like")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommentSenderId");
 
                     b.HasIndex("PostId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("TestChat.Shared.Data.PostFold.CommentFold.CommentLike", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("CommentLike");
                 });
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Like", b =>
@@ -188,11 +169,11 @@ namespace TestChat.Server.Migrations
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Post", b =>
                 {
-                    b.Property<int>("PostId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Access")
                         .IsRequired()
@@ -212,7 +193,7 @@ namespace TestChat.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PostId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MediaAccountId");
 
@@ -240,18 +221,17 @@ namespace TestChat.Server.Migrations
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Comment", b =>
                 {
-                    b.HasOne("TestChat.Shared.Data.PostFold.Post", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId")
+                    b.HasOne("TestChat.Shared.Data.MediaAccount", "CommentSender")
+                        .WithMany()
+                        .HasForeignKey("CommentSenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("TestChat.Shared.Data.PostFold.CommentFold.CommentLike", b =>
-                {
-                    b.HasOne("TestChat.Shared.Data.PostFold.Comment", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("CommentId");
+                    b.HasOne("TestChat.Shared.Data.PostFold.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("CommentSender");
                 });
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Like", b =>
@@ -273,11 +253,6 @@ namespace TestChat.Server.Migrations
             modelBuilder.Entity("TestChat.Shared.Data.MediaAccount", b =>
                 {
                     b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("TestChat.Shared.Data.PostFold.Comment", b =>
-                {
-                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Post", b =>

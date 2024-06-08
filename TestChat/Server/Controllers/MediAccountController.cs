@@ -85,7 +85,7 @@ namespace TestChat.Server.Controllers
             var mediaAccount = await _mediaAccountRepository.GetMediaAccountByUserName(userName);
             if (mediaAccount is null)
             {
-                return BadRequest("MediaAccount is empty");
+                return NotFound();
             }
             if(post is null)
             {

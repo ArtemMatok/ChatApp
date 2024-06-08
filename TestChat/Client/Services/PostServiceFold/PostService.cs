@@ -52,15 +52,24 @@ namespace TestChat.Client.Services.PostServiceFold
             return false;
         }
 
-        public async Task<bool> UpdatePostByComment(Post post)
+        public async Task<bool> UpdatePostByComment(int postId, Comment comment)
         {
-            var result = await _httpClient.PutAsJsonAsync("api/Post/UpdatePostByPost", post);
-
-            if (result.IsSuccessStatusCode)
+            try
             {
-                return true;
+                var result = await _httpClient.PutAsJsonAsync($"api/Post/UpdatePostByComment/{postId}", comment);
+                if(result.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false ;
+                }
             }
-            return false;
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while adding the comment: {ex.Message}", ex);
+            }
         }
 
         public async Task<bool> UpdatePostByLike(Post post)

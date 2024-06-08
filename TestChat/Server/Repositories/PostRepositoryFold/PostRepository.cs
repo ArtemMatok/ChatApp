@@ -21,7 +21,7 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
 
         public async Task<Post> GetPostById(int id)
         {
-            return await _context.Posts.Include(x=>x.LikesList).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Posts.Include(x=>x.LikesList).Include(x=>x.Comments).FirstOrDefaultAsync(x => x.PostId == id);
         }
 
         public bool Save()
@@ -36,22 +36,22 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
             return Save();
         }
 
-        public async Task<bool> UpdatePostByComment(Post postUpdated)
+        public async Task<bool> UpdatePostByComment(int postId, Comment comment)
         {
-            var post = await GetPostById(postUpdated.Id);
-            if (post == null)
+            var post = await GetPostById(postId);   
+            if(post == null)
             {
                 return false;
             }
-
-            post.Comments = postUpdated.Comments;
+            
+            post.Comments.Add(comment);
             _context.Posts.Update(post);
             return Save();
         }
 
         public async Task<bool> UpdatePostByLike(Post postUpdated)
         {
-            var post = await GetPostById(postUpdated.Id);
+            var post = await GetPostById(postUpdated.PostId);
             if(post == null)
             {
                 return false;

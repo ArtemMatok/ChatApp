@@ -6,7 +6,7 @@ namespace TestChat.Server.Repositories.PostRepositoryFold
     {
         Task<Post> GetPostById(int id);
         Task<bool> UpdatePostByLike(Post postUpdated);
-        Task<bool> UpdatePostByComment(Post postUpdated);
+        Task<bool> UpdatePostByComment(int postId, Comment comment);
         bool Save();
         bool Delete(Post post);
         bool Update(Post post);

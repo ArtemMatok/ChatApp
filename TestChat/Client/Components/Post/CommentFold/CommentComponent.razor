@@ -1,33 +1,239 @@
-﻿
+﻿@inject IPostService _postService
+@inject IMediaAccountService _mediaAccountService
+@inject ICommentService _commentService
 
-<div class="comment-session">
-    <div class="post-comment">
-        <div class="comment-list">
-            <div class="flex">
-                <div class="user-comment">
-                    <div class="user-comment-image"><img class="img-comment" src="https://i.ibb.co/r6VJxn0/profile-17.jpg" /></div>
-                    <div class="user-media">
-                        <div class="name-comment">Full Name</div>
-                        <div class="day">10 day ago</div>
+@if (errorMessage.Length != 0)
+{
+    <h2>@errorMessage</h2>
+}
+
+@if (mediaAccount.Id != 0)
+{
+    <div class="comment-session">
+        <div class="post-comment">
+            @if (comments.Count == 0)
+            {
+                <h2>There aren`t any comments</h2>
+            }
+            @if (CountComments == "Part")
+            {
+                @foreach (var item in comments.OrderByDescending(x => x.Id).Take(15))
+                {
+
+                    <div class="comment-list-container">
+                        <div class="comment-list">
+                            <div class="flex">
+                                <div class="user-comment">
+                                    <div class="user-comment-image"><img class="img-comment" src="@item.MediaAccountPhoto" /></div>
+                                    <div class="user-media">
+                                        <div class="name-comment">@item.UserName</div>
+                                    </div>
+                                </div>
+                                <div class="reply">
+                                    <div @onclick="()=>LikeHandle(item.Id)" class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
+                                </div>
+                            </div>
+                            <div class="comment">
+                                @item.Content
+                            </div>
+                            <div class="delete-comment">
+                                <svg @onclick="()=>ShowConfirmationAsync(item)" class="trash-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="reply">
-                    <div class="lick icon-comment"><i class="uil uil-heart"></i></div>
-                </div>
-            </div>
-            <div class="comment">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, alias.
-            </div>
-        </div>
-        
-        <form action="" class="comment-box">
-            <div class="user-comment">
-                <div class="image-comment"><img class="img-comment" src="https://i.ibb.co/r6VJxn0/profile-17.jpg" /></div>
-                <div class="name-comment">Full Name</div>
-            </div>
-            <textarea name="comment"></textarea>
-            <button class="comment-submit">Comment</button>
-        </form>
-    </div>
-</div>
 
+                }
+
+            }
+            else
+            {
+                @foreach (var item in comments)
+                {
+
+
+                    <div class="comment-list">
+
+                        <div class="flex">
+                            <div class="user-comment">
+                                <div class="user-comment-image"><img class="img-comment" src="@item.MediaAccountPhoto" /></div>
+                                <div class="user-media">
+                                    <div class="name-comment">@item.UserName</div>
+                                </div>
+                            </div>
+                            <div class="reply">
+                                <div @onclick="()=>LikeHandle(item.Id)" class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
+                            </div>
+                        </div>
+                        <div class="comment">
+                            @item.Content
+                        </div>
+                        <div class="delete-comment">
+                            <svg @onclick="()=>ShowConfirmationAsync(item)" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
+                        </div>
+                    </div>
+                }
+            }
+
+            <EditForm Model="comment" class="comment-box">
+                <DataAnnotationsValidator />
+                <div class="user-comment">
+                    <div class="image-comment"><img class="img-comment" src="@mediaAccount.Photo" /></div>
+                    <div class="name-comment">@mediaAccount.UserName</div>
+                </div>
+                <InputTextArea @bind-Value="contentComment" name="comment" class="textarea-comment"></InputTextArea>
+                <h5 style="color:red;">@errContent</h5>
+                <button class="comment-submit" @onclick="CommentHandler">Comment</button>
+            </EditForm>
+        </div>
+    </div>
+    <ConfirmDialog @ref="dialog" />
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" AutoHide="true" Delay="6000" />
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <Spinner Type="SpinnerType.Border" />
+    </div>
+}
+
+@code{
+    [Parameter]
+    public int PostId { get; set; }
+    [Parameter]
+    public string MediaAccountUserName { get; set; }
+    [Parameter]
+    public string CountComments { get; set; }
+
+    private Post post = new();
+    private MediaAccount mediaAccount = new();
+    private List<Comment> comments = new();
+    private Comment comment = new();
+    private string contentComment = "";
+    private string errorMessage = "";
+    private string errContent = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            post = await _postService.GetPostById(PostId);
+            mediaAccount = await _mediaAccountService.GetAccountByUserName(MediaAccountUserName);
+            comments = await _commentService.GetCommentByPost(PostId);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+    }
+
+    private async Task CommentHandler()
+    {
+        //comment.CommentSender = mediaAccount;
+        if (contentComment == "")
+        {
+            errContent = "Please write comment";
+        }
+        else
+        {
+            errContent = "";
+            var comment = new Comment(mediaAccount.UserName, mediaAccount.Photo, contentComment, PostId);
+            post.Comments.Add(comment);
+            contentComment = "";
+
+            try
+            {
+                await _postService.UpdatePostByComment(PostId, comment);
+                //обновити коменти в листу
+                post = await _postService.GetPostById(PostId);
+                comments = post.Comments;
+
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+        }
+
+
+    }
+
+
+    private async Task LikeHandle(int commentId)
+    {
+        try
+        {
+            var comment = await _commentService.GetCommentById(commentId);
+
+            if(!comment.Likes.Any(x=>x.UserName == mediaAccount.UserName))
+            {
+                comment.Likes.Add(new CommentLike()
+                {
+                    UserName = mediaAccount.UserName
+                });
+            }
+            else
+            {
+                var like = comment.Likes.Find(x => x.Id == commentId);
+                comment.Likes.Remove(like);
+            }
+            // Back Update Comment by Like
+            await _commentService.UpdateCommentByLike(commentId, comment);
+           
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+
+    }
+
+    #region DeleteComment
+
+    private ConfirmDialog dialog = default!;
+
+    private async Task ShowConfirmationAsync(Comment comment)
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to delete this?",
+            message1: "This will delete the record. Once deleted can not be rolled back.",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            // do something
+            if (await _commentService.DeleteComment(comment.Id))
+            {
+                comments.Remove(comment);
+            }
+            else
+            {
+                ShowMessage(ToastType.Danger);
+            }
+
+        }
+        else
+        {
+            // do something
+        }
+    }
+    #endregion
+
+    #region ErrorToast
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Message = $"Something went wrong...",
+    };
+    #endregion
+
+
+
+}

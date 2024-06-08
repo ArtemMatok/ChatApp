@@ -15,6 +15,7 @@ namespace TestChat.Server.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<MediaAccount> MediaAccounts { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

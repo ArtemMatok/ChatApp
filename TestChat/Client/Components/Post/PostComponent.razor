@@ -9,78 +9,79 @@
     {
         <h2>@errorMessage</h2>
     }
-    <div class="feed">
-        <div class="head">
-            <div class="user">
-                <div class="profile-photo">
-                    <img src="@mediaAccount.Photo" alt="Alternate Text" />
-                </div>
-                <div class="ingo">
-                    <h3>@mediaAccount.FullName</h3>
-                    <small>@(timeCreate!= null && timeCreate.Length != 0 ? $"{timeCreate}" : "")</small>
-                </div>
-
+<div class="feed">
+    <div class="head">
+        <div class="user">
+            <div class="profile-photo">
+                <img src="@mediaAccount.Photo" alt="Alternate Text" />
             </div>
-            <span style="cursor:pointer;" @onclick="ShowPostComponent" class="edit">
-                <i class="uil uil-ellipsis-h"></i>
-            </span>
-        </div>
-        <div class="photo">
-            <img src="@post.ImageUrl" alt="Alternate Text" />
-        </div>
-
-        <div class="action-buttons">
-            <div class="interaction-buttons">
-                @if (post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
-                {
-                    <div @onclick="AddLike" class="span-post">
-
-                        <div class="heart-btn heart-active">
-                            <div class="content-heart heart-active">
-                                <span class="heart heart-active"></span>
-
-
-                            </div>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div @onclick="AddLike" class="span-post">
-
-                        <div class="heart-btn">
-                            <div class="content-heart">
-                                <span class="heart"></span>
-
-
-                            </div>
-                        </div>
-                    </div>
-
-                }
-
-
-
-
+            <div class="ingo">
+                <h3>@mediaAccount.FullName</h3>
+                <small>@(timeCreate!= null && timeCreate.Length != 0 ? $"{timeCreate}" : "")</small>
             </div>
-            <div @onclick="ShowCommentComponent" style="cursor:pointer;" class="bookmark">
-                <span><i class="uil uil-comment-dots"></i></span>
-            </div>
-        </div>
 
-        <div class="liked-by">
-            @foreach (var item in mediaAccountLikes.Take(3))
+        </div>
+        <span style="cursor:pointer;" @onclick="ShowPostComponent" class="edit">
+            <i class="uil uil-ellipsis-h"></i>
+        </span>
+    </div>
+    <div class="photo">
+        <img src="@post.ImageUrl" alt="Alternate Text" />
+    </div>
+
+    <div class="action-buttons">
+        <div class="interaction-buttons">
+            @if (post.LikesList.Where(x => x.UserNameAccount == mediaAccount.UserName).Any())
             {
-                <span><img src="@item.Photo" alt="Alternate Text" /></span>
+                <div @onclick="AddLike" class="span-post">
+
+                    <div class="heart-btn heart-active">
+                        <div class="content-heart heart-active">
+                            <span class="heart heart-active"></span>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div @onclick="AddLike" class="span-post">
+
+                    <div class="heart-btn">
+                        <div class="content-heart">
+                            <span class="heart"></span>
+
+
+                        </div>
+                    </div>
+                </div>
 
             }
-            <p>Liked by <b>@(FormatNumberWithSpaces(post.Likes))</b></p>
-        </div>
 
-        <div class="caption">
-            <p><b>@mediaAccount.FullName </b> @post.Title</p>
+
+
+
+        </div>
+        <div @onclick="()=>ShowCommentComponent(partComment)" style="cursor:pointer;" class="bookmark">
+            <span><i class="uil uil-comment-dots"></i></span>
         </div>
     </div>
+
+    <div class="liked-by">
+        @foreach (var item in mediaAccountLikes.Take(3))
+        {
+            <span><img src="@item.Photo" alt="Alternate Text" /></span>
+
+        }
+        <p>Liked by <b>@(FormatNumberWithSpaces(post.Likes))</b></p>
+    </div>
+
+    <div class="caption">
+        <p><b>@mediaAccount.FullName </b> @post.Title</p>
+    </div>
+    <div @onclick="()=>ShowCommentComponent(allComment)" style="cursor:pointer;" class="comments text-muted">View all @(amountComments<100? amountComments: "100+") comments</div>
+</div>
 
     <Modal Style="height:700px" UseStaticBackdrop="true" @ref="modal" />
     <Modal @ref="modalComment" UseStaticBackdrop="true"/>
@@ -104,6 +105,9 @@ else
     private string timeCreate = null;
     private bool isLiked = false;
     private List<MediaAccount> mediaAccountLikes = new();
+    private string partComment = "Part";
+    private string allComment = "All";
+    private int amountComments;
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,11 +117,8 @@ else
 
             mediaAccount = await _mediaAccount.GetAccountByUserName(MediaAccountUserName);
             timeCreate = TimeAgo(post.DateCreated);
-            mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.Id);
-            foreach (var item in mediaAccountLikes)
-            {
-                Console.WriteLine(item.UserName);
-            }
+            mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.PostId);
+            amountComments = post.Comments.Count();
         }
         catch (Exception ex)
         {
@@ -169,12 +170,12 @@ else
         }
         else
         {
-            post.LikesList.Add(new Like(mediaAccount.UserName, post.Id));
+            post.LikesList.Add(new Like(mediaAccount.UserName, post.PostId));
         }
 
         await _jsRuntime.InvokeVoidAsync("window.likeChange");
         await _postService.UpdatePostByLike(post);
-        mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.Id);
+        mediaAccountLikes = await _mediaAccount.GetMediaAccountsByPost(post.PostId);
 
     }
 
@@ -194,11 +195,22 @@ else
     #region ModalComment
     private Modal modalComment = default!;
 
-    private async Task ShowCommentComponent()
+    private async Task ShowCommentComponent(string amountComments)
     {
         var parameters = new Dictionary<string, object>();
-        parameters.Add("EmployeeId", 321);
-        await modalComment.ShowAsync<TestChat.Client.Components.Post.CommentFold.CommentComponent>(title: "Comment");
+        parameters.Add("PostId", PostId);
+        parameters.Add("MediaAccountUserName", MediaAccountUserName);
+        parameters.Add("CountComments", amountComments);
+        if(amountComments =="All")
+        {
+            await modalComment.ShowAsync<TestChat.Client.Components.Post.CommentFold.CommentComponent>(title: "All Comments", parameters: parameters);
+        }
+        else
+        {
+            await modalComment.ShowAsync<TestChat.Client.Components.Post.CommentFold.CommentComponent>(title: "Comments", parameters: parameters);
+
+        }
+
     }
     #endregion
 }

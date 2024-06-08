@@ -9,7 +9,7 @@ namespace TestChat.Shared.Data.PostFold
 {
     public class Post
     {
-        public int Id { get; set; }
+        public int PostId { get; set; }
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; }
         [Required(ErrorMessage ="Photo is required")]

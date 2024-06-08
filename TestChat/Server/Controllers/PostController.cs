@@ -23,7 +23,7 @@ namespace TestChat.Server.Controllers
 
             if(post == null)
             {
-                return BadRequest("Post wasn`t found");
+                return NotFound();
             }
             return Ok(post);    
         }
@@ -33,7 +33,7 @@ namespace TestChat.Server.Controllers
         {
             if(post == null)
             {
-                return BadRequest("Post is null");    
+                return NotFound();
             }
 
             var result = await _postRepository.UpdatePostByLike(post);
@@ -47,6 +47,7 @@ namespace TestChat.Server.Controllers
             else
             {
                 return BadRequest("Something went wrong");
+                
             }
         }
 
@@ -89,26 +90,24 @@ namespace TestChat.Server.Controllers
         }
 
 
-        [HttpPut("UpdatePostByPost")]
-        public async Task<IActionResult> UpdatePostByPost(Post post)
+        [HttpPut("UpdatePostByComment/{postId}")]
+        public async Task<IActionResult> UpdatePostByComment (int postId, Comment comment)
         {
-            if (post == null)
+            if(comment is null)
             {
-                return BadRequest("Post is null");
+                return BadRequest("Comment is null");
             }
+            var result = await _postRepository.UpdatePostByComment(postId, comment);
 
-            var result = await _postRepository.UpdatePostByLike(post);
-
-
-
-            if (result)
+            if(result)
             {
-                return Ok(result);
+                return Ok("Comment was added");
             }
             else
             {
-                return BadRequest("Something went wrong");
+                return BadRequest("Something went wrong...");  
             }
+
         }
     }
 }

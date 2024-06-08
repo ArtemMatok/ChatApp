@@ -5,6 +5,7 @@ using TestChat.Server;
 using TestChat.Server.Data;
 using TestChat.Server.Hubs;
 using TestChat.Server.Repositories.AccountRepositoryFolder;
+using TestChat.Server.Repositories.CommentRepositoryFold;
 using TestChat.Server.Repositories.MediaAccountRepositoryFold;
 using TestChat.Server.Repositories.MessageRepositoryFold;
 using TestChat.Server.Repositories.PostRepositoryFold;
@@ -53,6 +54,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IMediaAccountRepository, MediaAccountRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
