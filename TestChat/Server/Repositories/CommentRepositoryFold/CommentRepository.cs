@@ -26,8 +26,8 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
 
         public async Task<List<Comment>> GetCommentsByPost(int postId)
         {
-            var post = await _context.Posts.Include(x=>x.Comments).FirstOrDefaultAsync(x => x.PostId == postId);
-            return post.Comments;
+            return await  _context.Comments.Where(x => x.PostId == postId).Include(x => x.Likes).ToListAsync();
+
         }
 
         public bool Save()
