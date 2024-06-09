@@ -80,5 +80,20 @@ namespace TestChat.Server.Controllers
                 return BadRequest("Something went wrong...");
             }
         }
+
+        [HttpPut("UpdateCommentByAnswerComments/{commentId}")]
+        public async Task<IActionResult> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
+        {
+            var result = await _commentRepository.UpdateCommentByAnswerComments(commentId, answerComment);
+
+            if(result)
+            {
+                return Ok("Answer Comment Added");
+            }
+            else
+            {
+                return BadRequest("Something went wrong...");
+            }
+        }
     }
 }

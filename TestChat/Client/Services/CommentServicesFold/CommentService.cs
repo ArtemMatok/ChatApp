@@ -55,6 +55,20 @@ namespace TestChat.Client.Services.CommentServicesFold
             return result;
         }
 
+        public async Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/Post/UpdateCommentByAnswerComments/{commentId}", answerComment);
+
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> UpdateCommentByLike(int commentId, Comment commentUpdated)
         {
             var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByLike/{commentId}", commentUpdated);

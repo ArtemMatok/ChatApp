@@ -8,5 +8,6 @@ namespace TestChat.Client.Services.CommentServicesFold
         Task<bool> DeleteComment(int commentId);
         Task<Comment> GetCommentById(int commentId);
         Task<bool> UpdateCommentByLike(int commentId, Comment commentUpdated);
+        Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment);
     }
 }

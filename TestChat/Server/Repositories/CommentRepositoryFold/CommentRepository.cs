@@ -36,6 +36,21 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
             return saved>0? true : false;
         }
 
+        public async Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
+        {
+            var comment = await GetCommentById(commentId);  
+
+            if (comment == null)
+            {
+                return false;
+            }
+
+            comment.AnswerComments.Add(answerComment);  
+            _context.Comments.Update(comment);
+
+            return Save();
+        }
+
         public async Task<bool> UpdateCommentByLikes(int commentId,Comment commentUpdate)
         {
             var comment = await GetCommentById(commentId);
