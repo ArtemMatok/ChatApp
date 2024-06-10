@@ -1,0 +1,92 @@
+﻿@inject IMediaAccountService _mediaAccountService
+@inject IPostService _postService
+@inject ICommentService _commentService
+
+<div class="post-comment">
+
+
+    <EditForm Model="comment" class="comment-box">
+        <DataAnnotationsValidator />
+        <div class="user-comment">
+            <div class="image-comment"><img class="img-comment" src="@mediaAccount.Photo" /></div>
+            <div class="name-comment">@mediaAccount.UserName</div>
+        </div>
+        <InputTextArea @bind-Value="contentComment" name="comment" class="textarea-comment"></InputTextArea>
+
+        <button class="comment-submit" @onclick="CommentHandler">Comment</button>
+    </EditForm>
+</div>
+<Toasts class="p-3" AutoHide="true" Delay="6000" Messages="messages" Placement="ToastsPlacement.TopCenter" />
+@code {
+    [Parameter]
+    public int CommentId { get; set; }
+    [Parameter]
+    public int PostId { get; set; }
+    [Parameter]
+    public string MediaAccountUserName { get; set; }
+
+    //private Post post = new();
+    private MediaAccount mediaAccount = new();
+    private List<Comment> comments = new();
+    private Comment comment = new();
+    private string contentComment = "";
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        mediaAccount = await _mediaAccountService.GetAccountByUserName(MediaAccountUserName);
+
+    }
+
+    private async Task CommentHandler()
+    {
+        var answerComment = new Comment(mediaAccount.UserName, mediaAccount.Photo, contentComment, PostId);
+
+        var result = await _commentService.UpdateCommentByAnswerComments(CommentId, answerComment);
+
+        if (result)
+        {
+            ShowMessage(ToastType.Success, true);
+            contentComment = "";
+        }
+        else
+        {
+            ShowMessage(ToastType.Danger, false);
+        }
+    }
+
+
+
+    #region Toast
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType, bool isCorrect) => messages.Add(CreateToastMessage(toastType, isCorrect));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, bool isCorrect)
+    {
+        if (isCorrect)
+        {
+            return new ToastMessage
+            {
+                Type = toastType,
+               
+                Message = $"Success added message. DateTime: {DateTime.Now}",
+            };
+        }
+        else
+        {
+            return new ToastMessage
+            {
+                Type = toastType,
+                
+                Message = $"Something went wrong... DateTime: {DateTime.Now}",
+            };
+        }
+    }
+
+
+    #endregion
+}

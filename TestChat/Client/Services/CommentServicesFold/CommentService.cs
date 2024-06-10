@@ -57,7 +57,7 @@ namespace TestChat.Client.Services.CommentServicesFold
 
         public async Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
         {
-            var result = await _httpClient.PutAsJsonAsync($"api/Post/UpdateCommentByAnswerComments/{commentId}", answerComment);
+            var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByAnswerComments/{commentId}", answerComment);
 
             if (result.IsSuccessStatusCode)
             {

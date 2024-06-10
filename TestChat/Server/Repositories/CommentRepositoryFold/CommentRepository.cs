@@ -21,12 +21,12 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
 
         public async Task<Comment> GetCommentById(int id)
         {
-            return await _context.Comments.Include(x=>x.Likes).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Comments.Include(x=>x.Likes).Include(x=>x.AnswerComments).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Comment>> GetCommentsByPost(int postId)
         {
-            return await  _context.Comments.Where(x => x.PostId == postId).Include(x => x.Likes).ToListAsync();
+            return await  _context.Comments.Where(x => x.PostId == postId).Include(x => x.Likes).Include(x=>x.AnswerComments).ToListAsync();
 
         }
 
@@ -46,9 +46,12 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
             }
 
             comment.AnswerComments.Add(answerComment);  
+            
             _context.Comments.Update(comment);
-
-            return Save();
+            
+            _context.SaveChanges();
+            
+            return true;
         }
 
         public async Task<bool> UpdateCommentByLikes(int commentId,Comment commentUpdate)

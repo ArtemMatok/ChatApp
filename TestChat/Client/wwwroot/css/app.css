@@ -1904,7 +1904,7 @@ main .container-main .right {
 
 .delete-comment {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
 }
 
 .trash-comment {
@@ -1947,4 +1947,8 @@ main .container-main .right {
         font-weight: 600;
     }
 
+
+.answer-comment{
+    font-size:20px;
+}
 /*---- End Comment Component -----*/

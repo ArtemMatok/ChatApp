@@ -26,6 +26,7 @@ namespace TestChat.Server.Data
                 x.HasOne(m => m.ToUser).WithMany().OnDelete(DeleteBehavior.NoAction);
                 x.HasOne(m => m.FromUser).WithMany().OnDelete(DeleteBehavior.NoAction);
             });
+
         }
     }
 }
