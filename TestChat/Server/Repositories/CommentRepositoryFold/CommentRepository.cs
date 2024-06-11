@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestChat.Server.Data;
 using TestChat.Shared.Data.PostFold;
+using TestChat.Shared.Data.PostFold.CommentFold;
 
 namespace TestChat.Server.Repositories.CommentRepositoryFold
 {
@@ -26,8 +27,9 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
 
         public async Task<List<Comment>> GetCommentsByPost(int postId)
         {
-            return await  _context.Comments.Where(x => x.PostId == postId).Include(x => x.Likes).Include(x=>x.AnswerComments).ToListAsync();
+            var allComments =  await  _context.Comments.Where(x => x.PostId == postId).Include(x => x.Likes).Include(x=>x.AnswerComments).ToListAsync();
 
+            return allComments;
         }
 
         public bool Save()
@@ -36,35 +38,17 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
             return saved>0? true : false;
         }
 
-        public async Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
+        public bool UpdateCommentByAnswerComment(Comment comment, AnswerComment answer)
         {
-            var comment = await GetCommentById(commentId);  
-
-            if (comment == null)
-            {
-                return false;
-            }
-
-            comment.AnswerComments.Add(answerComment);  
-            
-            _context.Comments.Update(comment);
-            
-            _context.SaveChanges();
-            
-            return true;
-        }
-
-        public async Task<bool> UpdateCommentByLikes(int commentId,Comment commentUpdate)
-        {
-            var comment = await GetCommentById(commentId);
-            if(comment is null)
-            {
-                return false;
-            }
-
-            comment.Likes = commentUpdate.Likes;
+            comment.AnswerComments.Add(answer);
             _context.Comments.Update(comment);
             return Save();
         }
+
+       
+
+       
+
+       
     }
 }

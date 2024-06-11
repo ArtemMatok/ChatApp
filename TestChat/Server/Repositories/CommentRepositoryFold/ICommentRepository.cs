@@ -1,4 +1,5 @@
 ﻿using TestChat.Shared.Data.PostFold;
+using TestChat.Shared.Data.PostFold.CommentFold;
 
 namespace TestChat.Server.Repositories.CommentRepositoryFold
 {
@@ -6,8 +7,9 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
     {
         Task<Comment> GetCommentById(int id);
         Task<List<Comment>> GetCommentsByPost(int postId);
-        Task<bool> UpdateCommentByLikes(int commentId,Comment commentUpdate);
-        Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment);
+        
+        bool UpdateCommentByAnswerComment(Comment comment, AnswerComment answer);
+        
         bool Delete(Comment comment);
         bool Save();
     }

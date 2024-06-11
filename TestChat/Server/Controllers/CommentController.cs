@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.Design;
 using TestChat.Server.Repositories.CommentRepositoryFold;
 using TestChat.Shared.Data.PostFold;
+using TestChat.Shared.Data.PostFold.CommentFold;
 
 namespace TestChat.Server.Controllers
 {
@@ -62,38 +63,33 @@ namespace TestChat.Server.Controllers
             return Ok(result);  
         }
 
-        [HttpPut("UpdateCommentByLike/{commentId}")]
-        public async Task<IActionResult> UpdateCommentByLike(int commentId,Comment commentUpdated)
+        
+
+
+        [HttpPut("UpdateCommentByAnswerComment/{commentId}")]
+        public async Task<IActionResult> UpdateCommentByAnswerComment(int commentId, AnswerComment answer)
         {
-            if(commentUpdated == null)
+            if(answer == null)
             {
-                return BadRequest("Comment is null");
+                return BadRequest("Answer is null");
             }
-            var result = await _commentRepository.UpdateCommentByLikes(commentId, commentUpdated);  
+
+            var comment = await _commentRepository.GetCommentById(commentId);
+
+            if(comment is null)
+            {
+                return NotFound();
+            }
+
+            var result = _commentRepository.UpdateCommentByAnswerComment(comment, answer);
 
             if(result)
             {
-                return Ok("Updated!");
+                return Ok("AnswerComment Added");
             }
-            else
-            {
-                return BadRequest("Something went wrong...");
-            }
+            else { return BadRequest("Something went wrong..."); }
         }
 
-        [HttpPut("UpdateCommentByAnswerComments/{commentId}")]
-        public async Task<IActionResult> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
-        {
-            var result = await _commentRepository.UpdateCommentByAnswerComments(commentId, answerComment);
 
-            if(result)
-            {
-                return Ok("Answer Comment Added");
-            }
-            else
-            {
-                return BadRequest("Something went wrong...");
-            }
-        }
     }
 }

@@ -31,7 +31,8 @@ namespace TestChat.Shared.Data.PostFold
         [Required(ErrorMessage = "Message is required")]
         public string Content { get; set; }
         public List<CommentLike> Likes { get; set; } = new List<CommentLike>();
-        public List<Comment> AnswerComments { get; set; } = new List<Comment>();
+        public List<AnswerComment> AnswerComments { get; set; } = new List<AnswerComment>();
+
         [NotMapped]        
         public bool IsOpenAnswerComments { get; set; }
        

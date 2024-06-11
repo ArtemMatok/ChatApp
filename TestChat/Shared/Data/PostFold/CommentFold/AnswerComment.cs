@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace TestChat.Shared.Data.PostFold.CommentFold
 {
-    public class CommentLike
+    public class AnswerComment
     {
-        public int Id { get; set; }
-       
+        public int AnswerCommentId { get; set; }
         public string UserName { get; set; }
         public string MediaAccountPhoto { get; set; }
         [Required(ErrorMessage = "Message is required")]

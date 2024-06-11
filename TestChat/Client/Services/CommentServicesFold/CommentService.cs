@@ -1,6 +1,7 @@
 ﻿
 using System.Net.Http.Json;
 using TestChat.Shared.Data.PostFold;
+using TestChat.Shared.Data.PostFold.CommentFold;
 
 namespace TestChat.Client.Services.CommentServicesFold
 {
@@ -55,11 +56,11 @@ namespace TestChat.Client.Services.CommentServicesFold
             return result;
         }
 
-        public async Task<bool> UpdateCommentByAnswerComments(int commentId, Comment answerComment)
+        public async Task<bool> UpdateCommentByAnswerComment(int commentId, AnswerComment answer)
         {
-            var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByAnswerComments/{commentId}", answerComment);
+            var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByAnswerComment/{commentId}", answer);
 
-            if (result.IsSuccessStatusCode)
+            if(result.IsSuccessStatusCode)
             {
                 return true;
             }
@@ -69,16 +70,6 @@ namespace TestChat.Client.Services.CommentServicesFold
             }
         }
 
-        public async Task<bool> UpdateCommentByLike(int commentId, Comment commentUpdated)
-        {
-            var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByLike/{commentId}", commentUpdated);
-
-            if (result.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            return false;   
-           
-        }
+        
     }
 }

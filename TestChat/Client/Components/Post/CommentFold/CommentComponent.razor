@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="reply">
-                                    <div @onclick="()=>LikeHandle(item.Id)" class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
+                                    <div  class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
                                 </div>
                             </div>
                             <div class="comment">
@@ -39,8 +39,7 @@
                             </div>
                             <div class="delete-comment">
                                 <svg @onclick="()=>ShowAnswerCommentComponent(item.Id)" style="cursor:pointer;" class="answer-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="black" d="M5.455 15L1 18.5V3a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v12zm-.692-2H16V4H3v10.385zM8 17h10.237L20 18.385V8h1a1 1 0 0 1 1 1v13.5L17.546 19H9a1 1 0 0 1-1-1z" /></svg>
-                                <svg @onclick="()=>ShowAnswer(item)" style="cursor:pointer;" class="answer-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="black" d="M5.455 15L1 18.5V3a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v12zm-.692-2H16V4H3v10.385zM8 17h10.237L20 18.385V8h1a1 1 0 0 1 1 1v13.5L17.546 19H9a1 1 0 0 1-1-1z" /></svg>
-
+                                <p @onclick="()=>ShowAnswer(item)" style="color:grey; cursor:pointer;">See All Answers: @item.AnswerComments.Count()</p>
                                 <svg @onclick="()=>ShowConfirmationAsync(item)" class="trash-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
                             </div>
                         </div>
@@ -59,23 +58,17 @@
                                                 <div class="name-comment">@answer.UserName</div>
                                             </div>
                                         </div>
-                                        <div class="reply">
-                                            <div class="lick icon-comment">123 <i class="uil uil-heart"></i></div>
-                                        </div>
+
                                     </div>
                                     <div class="comment">
                                         @answer.Content
                                     </div>
-                                    <div class="delete-comment">
-                                        <svg @onclick="()=>ShowConfirmationAsync(answer)" class="trash-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
-                                    </div>
+
                                 </div>
                             </div>
                         }
 
                     }
-                  
-
 
                 }
 
@@ -87,26 +80,54 @@
                 {
 
 
-                    <div class="comment-list">
-
-                        <div class="flex">
-                            <div class="user-comment">
-                                <div class="user-comment-image"><img class="img-comment" src="@item.MediaAccountPhoto" /></div>
-                                <div class="user-media">
-                                    <div class="name-comment">@item.UserName</div>
+                    <div class="comment-list-container">
+                        <div class="comment-list">
+                            <div class="flex">
+                                <div class="user-comment">
+                                    <div class="user-comment-image"><img class="img-comment" src="@item.MediaAccountPhoto" /></div>
+                                    <div class="user-media">
+                                        <div class="name-comment">@item.UserName</div>
+                                    </div>
+                                </div>
+                                <div class="reply">
+                                    <div class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
                                 </div>
                             </div>
-                            <div class="reply">
-                                <div @onclick="()=>LikeHandle(item.Id)" class="lick icon-comment">@(FormatNumberWithSpaces(item.Likes.Count())) <i class="uil uil-heart"></i></div>
+                            <div class="comment">
+                                @item.Content
+                            </div>
+                            <div class="delete-comment">
+                                <svg @onclick="()=>ShowAnswerCommentComponent(item.Id)" style="cursor:pointer;" class="answer-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="black" d="M5.455 15L1 18.5V3a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v12zm-.692-2H16V4H3v10.385zM8 17h10.237L20 18.385V8h1a1 1 0 0 1 1 1v13.5L17.546 19H9a1 1 0 0 1-1-1z" /></svg>
+                                <p @onclick="()=>ShowAnswer(item)" style="color:grey; cursor:pointer;">See All Answers: @item.AnswerComments.Count()</p>
+                                <svg @onclick="()=>ShowConfirmationAsync(item)" class="trash-comment" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
                             </div>
                         </div>
-                        <div class="comment">
-                            @item.Content
-                        </div>
-                        <div class="delete-comment">
-                            <svg @onclick="()=>ShowConfirmationAsync(item)" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="black" d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75M4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.75 1.75 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15M6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25" /></svg>
-                        </div>
                     </div>
+                    @if (item.IsOpenAnswerComments)
+                    {
+                        @foreach (var answer in item.AnswerComments)
+                        {
+
+                            <div class="comment-list-container">
+                                <div class="comment-answer-list">
+                                    <div class="flex">
+                                        <div class="user-comment">
+                                            <div class="user-comment-image"><img class="img-comment" src="@answer.MediaAccountPhoto" /></div>
+                                            <div class="user-media">
+                                                <div class="name-comment">@answer.UserName</div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="comment">
+                                        @answer.Content
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+
+                    }
                 }
             }
 
@@ -155,6 +176,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+
+        await Load();
+    }
+
+    private async Task Load()
+    {
         try
         {
             post = await _postService.GetPostById(PostId);
@@ -166,7 +193,6 @@ else
         {
             errorMessage = ex.Message;
         }
-
     }
 
     private async Task CommentHandler()
@@ -187,8 +213,7 @@ else
             {
                 await _postService.UpdatePostByComment(PostId, comment);
                 //обновити коменти в листу
-                post = await _postService.GetPostById(PostId);
-                comments = await _commentService.GetCommentByPost(PostId);
+                await Load();
 
             }
             catch (Exception ex)
@@ -201,35 +226,12 @@ else
     }
 
 
-    private async Task LikeHandle(int commentId)
-    {
-        try
-        {
-            var comment = await _commentService.GetCommentById(commentId);
-
-            if (!comment.Likes.Any(x => x.UserName == mediaAccount.UserName))
-            {
-                comment.Likes.Add(new CommentLike()
-                {
-                    UserName = mediaAccount.UserName
-                });
-            }
-            else
-            {
-                var like = comment.Likes.Find(x => x.UserName == mediaAccount.UserName);
-                comment.Likes.Remove(like);
-            }
-            // Back Update Comment by Like
-            await _commentService.UpdateCommentByLike(commentId, comment);
-            comments = await _commentService.GetCommentByPost(PostId);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+   
 
 
-    }
+
+
+
 
     #region DeleteComment
 
@@ -288,9 +290,16 @@ else
         parameters.Add("CommentId", commentId);
         parameters.Add("PostId", PostId);
         parameters.Add("MediaAccountUserName", MediaAccountUserName);
+        parameters.Add("OnCommentAdded", EventCallback.Factory.Create(this, OnCommentAdded));
         await modal.ShowAsync<AnswerCommentComponent>(title: "Employee Details", parameters: parameters);
     }
     #endregion
+
+    private async Task OnCommentAdded()
+    {
+        await Load();
+    }
+
 
     private void ShowAnswer(Comment comment)
     {

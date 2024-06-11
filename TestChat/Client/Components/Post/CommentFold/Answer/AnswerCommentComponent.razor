@@ -24,6 +24,8 @@
     public int PostId { get; set; }
     [Parameter]
     public string MediaAccountUserName { get; set; }
+    [Parameter]
+    public EventCallback OnCommentAdded { get; set; }
 
     //private Post post = new();
     private MediaAccount mediaAccount = new();
@@ -43,14 +45,23 @@
 
     private async Task CommentHandler()
     {
-        var answerComment = new Comment(mediaAccount.UserName, mediaAccount.Photo, contentComment, PostId);
+        var answerComment = new AnswerComment()
+        {
+            Content = contentComment,
+            UserName = MediaAccountUserName,
+            MediaAccountPhoto = mediaAccount.Photo
+        };
 
-        var result = await _commentService.UpdateCommentByAnswerComments(CommentId, answerComment);
+
+
+
+        var result = await _commentService.UpdateCommentByAnswerComment(CommentId, answerComment);
 
         if (result)
         {
             ShowMessage(ToastType.Success, true);
             contentComment = "";
+            await OnCommentAdded.InvokeAsync();
         }
         else
         {
@@ -72,7 +83,7 @@
             return new ToastMessage
             {
                 Type = toastType,
-               
+
                 Message = $"Success added message. DateTime: {DateTime.Now}",
             };
         }
@@ -81,7 +92,7 @@
             return new ToastMessage
             {
                 Type = toastType,
-                
+
                 Message = $"Something went wrong... DateTime: {DateTime.Now}",
             };
         }
