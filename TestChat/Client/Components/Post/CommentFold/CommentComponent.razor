@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="reply">
-                                    <div  class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
+                                    <div @onclick="()=>LikeHandle(item.Id)"  class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
                                 </div>
                             </div>
                             <div class="comment">
@@ -226,7 +226,28 @@ else
     }
 
 
-   
+    private async Task LikeHandle(int commentId)
+    {
+        var comment = await _commentService.GetCommentById(commentId);
+
+        if(!comment.Likes.Any(x=>x.UserName == MediaAccountUserName))
+        {
+            comment.Likes.Add(new CommentLike()
+            {
+                UserName = MediaAccountUserName,
+            });
+
+        }
+        else
+        {
+            var like = comment.Likes.FirstOrDefault(x => x.UserName == MediaAccountUserName);
+            comment.Likes.Remove(like);
+        }
+        await _commentService.UpdateCommentByLike(commentId, comment);
+        comments = await _commentService.GetCommentByPost(PostId);
+
+
+    }
 
 
 

@@ -45,10 +45,12 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
             return Save();
         }
 
-       
+        public bool UpdateCommentByLiked(Comment comment, Comment updateComment)
+        {
+            comment.Likes = updateComment.Likes;
 
-       
-
-       
+            _context.Comments.Update(comment);
+            return Save();
+        }
     }
 }

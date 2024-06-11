@@ -70,6 +70,15 @@ namespace TestChat.Client.Services.CommentServicesFold
             }
         }
 
-        
+        public async Task<bool> UpdateCommentByLike(int commentId, Comment updateComment)
+        {
+            var result = await _httpClient.PutAsJsonAsync($"api/Comment/UpdateCommentByLike/{commentId}", updateComment);
+
+            if(result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

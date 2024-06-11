@@ -7,8 +7,9 @@ namespace TestChat.Server.Repositories.CommentRepositoryFold
     {
         Task<Comment> GetCommentById(int id);
         Task<List<Comment>> GetCommentsByPost(int postId);
-        
+        bool UpdateCommentByLiked(Comment comment, Comment updateComment);
         bool UpdateCommentByAnswerComment(Comment comment, AnswerComment answer);
+
         
         bool Delete(Comment comment);
         bool Save();

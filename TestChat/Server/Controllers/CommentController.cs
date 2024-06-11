@@ -91,5 +91,31 @@ namespace TestChat.Server.Controllers
         }
 
 
+
+        [HttpPut("UpdateCommentByLike/{commentId}")]
+        public async Task<IActionResult> UpdateCommentByLike(int commentId, Comment updateComment)
+        {
+            var comment = await _commentRepository.GetCommentById(commentId);
+            if(comment is null)
+            {
+                return NotFound();
+            }
+
+            if(updateComment is null)
+            {
+                return BadRequest("Updated Comment is null");
+            }
+
+            var result = _commentRepository.UpdateCommentByLiked(comment, updateComment);
+            if(result)
+            {
+                return Ok("Like was added");
+            }
+            else
+            {
+                return BadRequest("Something went wrong...");
+            }
+
+        }
     }
 }

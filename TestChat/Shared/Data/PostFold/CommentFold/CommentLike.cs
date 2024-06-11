@@ -12,8 +12,6 @@ namespace TestChat.Shared.Data.PostFold.CommentFold
         public int Id { get; set; }
        
         public string UserName { get; set; }
-        public string MediaAccountPhoto { get; set; }
-        [Required(ErrorMessage = "Message is required")]
-        public string Content { get; set; }
+       
     }
 }
