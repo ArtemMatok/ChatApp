@@ -61,7 +61,7 @@
 
                                     </div>
                                     <div class="comment">
-                                        @answer.Content
+                                        <b style="color:blue;">@@@item.UserName</b>, @answer.Content
                                     </div>
 
                                 </div>
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                                 <div class="reply">
-                                    <div class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
+                                    <div @onclick="()=>LikeHandle(item.Id)" class="lick icon-comment">@item.Likes.Count() <i class="uil uil-heart"></i></div>
                                 </div>
                             </div>
                             <div class="comment">
@@ -120,7 +120,7 @@
 
                                     </div>
                                     <div class="comment">
-                                        @answer.Content
+                                        @@@item.UserName, @answer.Content
                                     </div>
 
                                 </div>
