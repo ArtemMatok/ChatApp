@@ -329,13 +329,18 @@
 
 
 
-
+<button @onclick="findPage">
+    click
+</button>
 
 
 
 @code {
-  
 
+    private void findPage()
+    {
+        _navManager.NavigateTo("FindPage");
+    }
 
 
 
