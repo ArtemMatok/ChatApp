@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Security.Principal;
 using TestChat.Shared.Data;
 using TestChat.Shared.Data.PostFold;
 
@@ -51,6 +52,37 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
           
         }
 
+        public async Task<List<MediaAccount>> GetAllMediaAccounts()
+        {
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<List<MediaAccount>>("api/MediAccount/GetAllMediaAccounts");
+                if (result is null)
+                {
+                    throw new Exception("Something went wrong... No accounts");
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"An error occurred while fetching Accounts: {ex.Message}", ex);
+            }
+           
+
+            
+        }
+
+        public async Task<List<MediaAccount>> GetAllMediaAccountWithoutCurrent(string userNameCurrent)
+        {
+            var result = await _httpClient.GetFromJsonAsync<List<MediaAccount>>($"api/MediAccount/GetMediaAccountsWithoutCurrent/{userNameCurrent}");
+            if(result is null)
+            {
+                return new List<MediaAccount>();
+            }
+            return result;
+        }
+
         public async Task<List<MediaAccount>> GetMediaAccountsByPost(int id)
         {
             try
@@ -65,6 +97,8 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
             }
         }
 
+       
+
         public async Task<bool> UpdateMediaAccount(string userName, MediaAccount mediaAccountUpdate)
         {
             var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateAccount/{userName}", mediaAccountUpdate);
@@ -74,6 +108,8 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
             }
             return false;
         }
+
+       
 
         public async Task<bool> UpdateMediaAccountByPost(string userName, Post post)
         {

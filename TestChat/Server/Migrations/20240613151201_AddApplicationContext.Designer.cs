@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestChat.Server.Data;
 
@@ -11,9 +12,11 @@ using TestChat.Server.Data;
 namespace TestChat.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613151201_AddApplicationContext")]
+    partial class AddApplicationContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace TestChat.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MediaAccountFollower", b =>
+                {
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FollowingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FollowerId", "FollowingId");
+
+                    b.HasIndex("FollowingId");
+
+                    b.ToTable("MediaAccountFollower");
+                });
 
             modelBuilder.Entity("TestChat.Server.Data.Entities.Message", b =>
                 {
@@ -78,42 +96,6 @@ namespace TestChat.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("TestChat.Shared.Data.Account.FolowAccount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("MediaAccountId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediaAccountId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MediaAccountId2")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Photo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MediaAccountId");
-
-                    b.HasIndex("MediaAccountId1");
-
-                    b.HasIndex("MediaAccountId2");
-
-                    b.ToTable("FolowAccount");
                 });
 
             modelBuilder.Entity("TestChat.Shared.Data.MediaAccount", b =>
@@ -285,6 +267,21 @@ namespace TestChat.Server.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("MediaAccountFollower", b =>
+                {
+                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
+                        .WithMany()
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TestChat.Server.Data.Entities.Message", b =>
                 {
                     b.HasOne("TestChat.Server.Data.Entities.User", "FromUser")
@@ -302,21 +299,6 @@ namespace TestChat.Server.Migrations
                     b.Navigation("FromUser");
 
                     b.Navigation("ToUser");
-                });
-
-            modelBuilder.Entity("TestChat.Shared.Data.Account.FolowAccount", b =>
-                {
-                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
-                        .WithMany("BestFriend")
-                        .HasForeignKey("MediaAccountId");
-
-                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
-                        .WithMany("Followers")
-                        .HasForeignKey("MediaAccountId1");
-
-                    b.HasOne("TestChat.Shared.Data.MediaAccount", null)
-                        .WithMany("Following")
-                        .HasForeignKey("MediaAccountId2");
                 });
 
             modelBuilder.Entity("TestChat.Shared.Data.PostFold.Comment", b =>
@@ -360,12 +342,6 @@ namespace TestChat.Server.Migrations
 
             modelBuilder.Entity("TestChat.Shared.Data.MediaAccount", b =>
                 {
-                    b.Navigation("BestFriend");
-
-                    b.Navigation("Followers");
-
-                    b.Navigation("Following");
-
                     b.Navigation("Posts");
                 });
 

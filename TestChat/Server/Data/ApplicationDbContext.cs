@@ -29,6 +29,8 @@ namespace TestChat.Server.Data
                 x.HasOne(m => m.FromUser).WithMany().OnDelete(DeleteBehavior.NoAction);
             });
 
+
+           
         }
     }
 }

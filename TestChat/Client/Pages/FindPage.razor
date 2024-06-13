@@ -1,6 +1,6 @@
-﻿@page "/FindPage"
+﻿@page "/FindPage/{UserName}"
+@inject IMediaAccountService _mediaAccountService
 
-@layout EmptyLayout
 
 
 <div class="body-find-page">
@@ -16,47 +16,75 @@
         </div>
 
         <div class="find-friends-body">
-            <div class="user-row">
-                <div class="user-info">
-                    <img src="https://i.ibb.co/rctQBp4/profile-18.jpg" alt="user" />
-                    <span>Jason Bond</span>
-                </div>
-                <div class="action-follow">
-                    Follow
-                </div>
-            </div>
+            @if (messageError.Length != 0)
+            {
+                <h4 style="color:red;">@messageError</h4>
+            }
+            @if (mediaAccounts.Count != 0)
+            {
+                foreach (var item in mediaAccounts)
+                {
+                    <div class="user-row">
+                        <div class="user-info">
+                            <img src="@item.Photo" alt="user" />
+                            <span>@item.FullName </span>
+                        </div>
+                        @if (mediaAccountCurrent.Following.Any(x => x.UserName == item.UserName))
+                        {
+                            <div class="action-unfollow">
+                                Unfollow
+                            </div>
 
-            <div class="user-row">
-                <div class="user-info">
-                    <img src="https://i.ibb.co/rctQBp4/profile-18.jpg" alt="user" />
-                    <span>Jason Bond</span>
-                </div>
-                <div class="action-follow">
-                    Follow
-                </div>
-            </div>
+                        }
+                        else
+                        {
 
-            <div class="user-row">
-                <div class="user-info">
-                    <img src="https://i.ibb.co/rctQBp4/profile-18.jpg" alt="user" />
-                    <span>Jason Bond</span>
-                </div>
-                <div class="action-follow">
-                    Follow
-                </div>
-            </div>
+                            <div @onclick="()=>FollowHandle(item)" class="action-follow">
+                                Follow
+                            </div>
+                        }
 
-            <div class="user-row">
-                <div class="user-info">
-                    <img src="https://i.ibb.co/rctQBp4/profile-18.jpg" alt="user" />
-                    <span>Jason Bond</span>
-                </div>
-                <div class="action-unfollow">
-                    Unfollow
-                </div>
-            </div>
+                    </div>
+                }
 
-            
+            }
+            else
+            {
+                <h4>No Accounts. Something went wrong...</h4>
+            }
         </div>
     </div>
 </div>
+
+
+
+@code{
+    [Parameter]
+    public string UserName { get; set; }
+
+    private MediaAccount mediaAccountCurrent = new MediaAccount();
+    private List<MediaAccount> mediaAccounts = new();
+    private string messageError = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            mediaAccounts = await _mediaAccountService.GetAllMediaAccountWithoutCurrent(UserName);
+
+            
+            Console.WriteLine($"Following:{mediaAccountCurrent.Following.Count()}");
+        }
+        catch (Exception ex)
+        {
+            messageError = ex.Message;
+        }
+    }
+
+    private async Task FollowHandle(MediaAccount mediaAccountFollowing)
+    {
+        
+    }
+
+   
+}

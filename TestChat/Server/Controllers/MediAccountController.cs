@@ -111,5 +111,53 @@ namespace TestChat.Server.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("GetAllMediaAccounts")]
+        public async Task<ActionResult<List<MediaAccount>>> GetAllMediaAccounts()
+        {
+            var result = await _mediaAccountRepository.GetAllMediaAccounts();
+
+            if (result is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetMediaAccountsWithoutCurrent/{userNameCurrent}")]
+        public async Task<ActionResult<List<MediaAccount>>> GetMediaAccountsWithoutCurrent(string userNameCurrent)
+        {
+            var result = await _mediaAccountRepository.GetAllAccountWithoutCurrent(userNameCurrent);
+
+            if(result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPut("UpdateMediaAccountByFolowAccount/{userNameCurrent}")]
+        public async Task<IActionResult> UpdateMediaAccountByFolowAccount(string userNameCurrent, MediaAccount mediaAccountFollowing)
+        {
+            var mediaAccountCurrent = await _mediaAccountRepository.GetMediaAccountByUserName(userNameCurrent);
+            if(mediaAccountCurrent is null)
+            {
+                return NotFound();
+            }
+
+            var result =  _mediaAccountRepository.UpdateMediaAccountByFolowAccount(mediaAccountCurrent, mediaAccountFollowing);
+
+            if(result)
+            {
+                return Ok("Success");
+            }
+            else
+            {
+                return BadRequest("Something went wrong...");
+            }
+        }
+
     }
 }

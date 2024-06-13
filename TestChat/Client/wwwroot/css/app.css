@@ -2095,7 +2095,7 @@ main .container-main .right {
 .find-friends-container {
     width: 400px;
     height: 70vh;
-    box-shadow: 5px 5px 20px #0C44A4;
+    box-shadow: 5px 5px 20px var(--color-primary);
     display: flex;
     flex-direction: column;
 }
@@ -2104,49 +2104,50 @@ main .container-main .right {
     background: linear-gradient(var(--color-primary) 0%, rgba(31,103,220,1) 100%);
 }
 
-    .find-friends-header .find-friends-heading {
-        color: #F1F1F1;
-        font-size: 18px;
-        font-weight: 100;
-        width: 100%;
-        text-align: center;
-        padding: 25px 0;
+.find-friends-header .find-friends-heading {
+color: #F1F1F1;
+font-size: 30px;
+font-weight: 100;
+width: 100%;
+text-align: center;
+padding: 25px 0;
+}
+
+.find-friends-header .find-friends-search {
+position: relative;
+}
+
+.find-friends-header .find-friends-search .search-icon {
+    position: absolute;
+    width: 20px;
+    top: 15px;
+    left: 40px;
+    color: white;
+}
+
+.find-friends-header .find-friends-search input {
+    border: none;
+    outline: none;
+    margin: 0 25px 25px 25px;
+    width: calc(100% - 50px);
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px 50px;
+    border-radius: 40px;
+    color: white;
+}
+
+    .find-friends-header .find-friends-search input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
 
-    .find-friends-header .find-friends-search {
-        position: relative;
-    }
-
-        .find-friends-header .find-friends-search .search-icon {
-            position: absolute;
-            width: 20px;
-            top: 15px;
-            left: 40px;
-            color: white;
-        }
-
-        .find-friends-header .find-friends-search input {
-            border: none;
-            outline: none;
-            margin: 0 25px 25px 25px;
-            width: calc(100% - 50px);
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 15px 50px;
-            border-radius: 40px;
-            color: white;
-        }
-
-            .find-friends-header .find-friends-search input::placeholder {
-                color: rgba(255, 255, 255, 0.5);
-            }
-        .find-friends-header .find-friends-search .serach-icon {
-            position: absolute;
-            width: 20px;
-            top: 15px;
-            left: 40px;
-            color: white;
-        }
+.find-friends-header .find-friends-search .serach-icon {
+    position: absolute;
+    width: 20px;
+    top: 15px;
+    left: 40px;
+    color: white;
+}
 
 .find-friends-body {
     background-color: #D0E7F8;
