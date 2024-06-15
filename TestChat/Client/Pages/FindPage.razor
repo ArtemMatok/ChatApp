@@ -31,7 +31,7 @@
                         </div>
                         @if (mediaAccountCurrent.Following.Any(x => x.UserName == item.UserName))
                         {
-                            <div class="action-unfollow">
+                            <div @onclick="()=>FollowHandle(item)" class="action-unfollow">
                                 Unfollow
                             </div>
 
@@ -56,7 +56,7 @@
     </div>
 </div>
 
-
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopCenter" AutoHide="true" Delay="6000" />
 
 @code{
     [Parameter]
@@ -70,10 +70,7 @@
     {
         try
         {
-            mediaAccounts = await _mediaAccountService.GetAllMediaAccountWithoutCurrent(UserName);
-
-            mediaAccountCurrent = await _mediaAccountService.GetAccountByUserName(UserName);
-            Console.WriteLine($"Following:{mediaAccountCurrent.Following.Count()}");
+            await Load();
         }
         catch (Exception ex)
         {
@@ -81,10 +78,41 @@
         }
     }
 
+    private async Task Load()
+    {
+        mediaAccounts = await _mediaAccountService.GetAllMediaAccountWithoutCurrent(UserName);
+
+        mediaAccountCurrent = await _mediaAccountService.GetAccountByUserName(UserName);
+    }
+
     private async Task FollowHandle(MediaAccount mediaAccountFollowing)
     {
         var result = await _mediaAccountService.UpdateMediaAccountByFolowAccount(UserName, mediaAccountFollowing);
+        if(result)
+        {
+
+            Console.WriteLine("Success");
+        }
+        else
+        {
+            ShowMessage(ToastType.Danger);
+        }
+        await Load();
+
     }
 
+
+    #region Toast Error
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType)
+    => new ToastMessage
+    {
+        Type = toastType,
+        Message = $"Something went wrong... Try again later",
+    };
+    #endregion
 
 }

@@ -93,9 +93,22 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
                 UserName = accountFollowing.UserName,
                 Photo = accountFollowing.Photo
             };
+            
+            if(accountCurrent.Following.Any(x=>x.UserName == following.UserName))
+            {
+                var followingAccount = accountCurrent.Following.FirstOrDefault(x=>x.UserName == following.UserName);
+                accountCurrent.Following.Remove(followingAccount);
 
-            accountCurrent.Following.Add(following);
-            accountFollowing.Followers.Add(current);
+                var followerAccount = accountFollowing.Followers.FirstOrDefault(x => x.UserName == accountCurrent.UserName);
+                accountFollowing.Followers.Remove(followerAccount);
+            }
+            else
+            {
+                accountCurrent.Following.Add(following);
+                accountFollowing.Followers.Add(current);
+            }
+
+           
 
             _context.MediaAccounts.Update(accountCurrent);
             _context.MediaAccounts.Update(accountFollowing);
