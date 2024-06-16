@@ -109,9 +109,10 @@ namespace TestChat.Client.Services.MediaAccountServiceFold
             return false;
         }
 
-        public async Task<bool> UpdateMediaAccountByFolowAccount(string userNameCurrent, MediaAccount mediaAccountFollowing)
+        public async Task<bool> UpdateMediaAccountByFolowAccount(string userNameCurrent, string userNameFollowing)
         {
-            var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateMediaAccountByFolowAccount/{userNameCurrent}", mediaAccountFollowing);
+
+            var result = await _httpClient.PutAsJsonAsync($"api/MediAccount/UpdateMediaAccountByFolowAccount/{userNameCurrent}/{userNameFollowing}", new { });
 
             if(result.IsSuccessStatusCode)
             {

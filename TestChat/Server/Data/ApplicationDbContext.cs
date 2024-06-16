@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestChat.Server.Data.Entities;
 using TestChat.Shared.Data;
+using TestChat.Shared.Data.Account.NotificationFold;
 using TestChat.Shared.Data.PostFold;
 using TestChat.Shared.Data.PostFold.CommentFold;
 
@@ -17,6 +18,7 @@ namespace TestChat.Server.Data
         public DbSet<MediaAccount> MediaAccounts { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }  
        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

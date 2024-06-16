@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestChat.Shared.Data.Account;
+using TestChat.Shared.Data.Account.NotificationFold;
 using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Shared.Data
@@ -24,5 +25,6 @@ namespace TestChat.Shared.Data
         public List<FolowAccount> BestFriend { get; set; } = new List<FolowAccount>();
         public List<FolowAccount> Followers { get; set; } = new List<FolowAccount>();
         public List<Post> Posts { get; set; } = new List<Post>();
+        public List<Notification> Notifications { get; set; } = new List<Notification>();   
     }
 }

@@ -138,11 +138,17 @@ namespace TestChat.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPut("UpdateMediaAccountByFolowAccount/{userNameCurrent}")]
-        public async Task<IActionResult> UpdateMediaAccountByFolowAccount(string userNameCurrent, MediaAccount mediaAccountFollowing)
+        [HttpPut("UpdateMediaAccountByFolowAccount/{userNameCurrent}/{userNameFollowing}")]
+        public async Task<IActionResult> UpdateMediaAccountByFolowAccount(string userNameCurrent, string userNameFollowing)
         {
             var mediaAccountCurrent = await _mediaAccountRepository.GetMediaAccountByUserName(userNameCurrent);
             if(mediaAccountCurrent is null)
+            {
+                return NotFound();
+            }
+
+            var mediaAccountFollowing = await _mediaAccountRepository.GetMediaAccountByUserName(userNameFollowing);
+            if(mediaAccountFollowing is null)
             {
                 return NotFound();
             }

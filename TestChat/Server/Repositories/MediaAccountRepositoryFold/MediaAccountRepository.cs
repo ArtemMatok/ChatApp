@@ -3,6 +3,7 @@ using TestChat.Server.Data;
 using TestChat.Server.Data.Entities;
 using TestChat.Shared.Data;
 using TestChat.Shared.Data.Account;
+using TestChat.Shared.Data.Account.NotificationFold;
 using TestChat.Shared.Data.PostFold;
 
 namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
@@ -48,6 +49,7 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
                 .Include(x=>x.Posts)
                 .Include(x=>x.Following)
                 .Include(x=>x.Followers)
+                .Include(x=>x.Notifications)
                 .FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
@@ -93,19 +95,30 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
                 UserName = accountFollowing.UserName,
                 Photo = accountFollowing.Photo
             };
-            
-            if(accountCurrent.Following.Any(x=>x.UserName == following.UserName))
+
+            var notification = new Notification()
+            {
+                UserName = accountCurrent.UserName,
+                Photo = accountCurrent.Photo,
+                NotificationMessage = "Subscribed to You"
+            };
+
+
+            if (accountCurrent.Following.Any(x=>x.UserName == following.UserName))
             {
                 var followingAccount = accountCurrent.Following.FirstOrDefault(x=>x.UserName == following.UserName);
                 accountCurrent.Following.Remove(followingAccount);
 
                 var followerAccount = accountFollowing.Followers.FirstOrDefault(x => x.UserName == accountCurrent.UserName);
+                var notificationAccount = accountFollowing.Notifications.FirstOrDefault(x => x.UserName == accountCurrent.UserName && x.NotificationMessage == "Subscribed to You");
                 accountFollowing.Followers.Remove(followerAccount);
+                accountFollowing.Notifications.Remove(notificationAccount);
             }
             else
             {
                 accountCurrent.Following.Add(following);
                 accountFollowing.Followers.Add(current);
+                accountFollowing.Notifications.Add(notification);
             }
 
            

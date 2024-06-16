@@ -1,6 +1,6 @@
 ﻿@page "/FindPage/{UserName}"
 @inject IMediaAccountService _mediaAccountService
-
+@inject NotificationState _notificationState
 
 
 <div class="body-find-page">
@@ -16,42 +16,55 @@
         </div>
 
         <div class="find-friends-body">
-            @if (messageError.Length != 0)
+            @if (isFollow == false)
             {
-                <h4 style="color:red;">@messageError</h4>
-            }
-            @if (mediaAccounts.Count != 0)
-            {
-                foreach (var item in mediaAccounts)
+                @if (messageError.Length != 0)
                 {
-                    <div class="user-row">
-                        <div class="user-info">
-                            <img src="@item.Photo" alt="user" />
-                            <span>@item.FullName </span>
+                    <h4 style="color:red;">@messageError</h4>
+                }
+                @if (mediaAccounts.Count != 0)
+                {
+                    foreach (var item in mediaAccounts)
+                    {
+                        <div class="user-row">
+                            <div class="user-info">
+                                <img src="@item.Photo" alt="user" />
+                                <span>@item.FullName </span>
+                            </div>
+                            @if (mediaAccountCurrent.Following.Any(x => x.UserName == item.UserName))
+                            {
+                                <div @onclick="()=>FollowHandle(item)" class="action-unfollow">
+                                    Unfollow
+                                </div>
+
+                            }
+                            else
+                            {
+
+                                <div @onclick="()=>FollowHandle(item)" class="action-follow">
+                                    Follow
+                                </div>
+                            }
+
                         </div>
-                        @if (mediaAccountCurrent.Following.Any(x => x.UserName == item.UserName))
-                        {
-                            <div @onclick="()=>FollowHandle(item)" class="action-unfollow">
-                                Unfollow
-                            </div>
+                    }
 
-                        }
-                        else
-                        {
-
-                            <div @onclick="()=>FollowHandle(item)" class="action-follow">
-                                Follow
-                            </div>
-                        }
-
+                }
+                else
+                {
+                    <div class="mt-2 d-flex justify-content-center">
+                        <Spinner Type="SpinnerType.Border" />
                     </div>
                 }
-
             }
             else
             {
-                <h4>No Accounts. Something went wrong...</h4>
+                <div class="mt-2 d-flex justify-content-center">
+                    <Spinner Type="SpinnerType.Border" />
+                </div>
             }
+
+            
         </div>
     </div>
 </div>
@@ -65,6 +78,7 @@
     private MediaAccount mediaAccountCurrent = new MediaAccount();
     private List<MediaAccount> mediaAccounts = new();
     private string messageError = "";
+    private bool isFollow = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,17 +101,18 @@
 
     private async Task FollowHandle(MediaAccount mediaAccountFollowing)
     {
-        var result = await _mediaAccountService.UpdateMediaAccountByFolowAccount(UserName, mediaAccountFollowing);
+        isFollow = true;
+        var result = await _mediaAccountService.UpdateMediaAccountByFolowAccount(UserName, mediaAccountFollowing.UserName);
         if(result)
         {
-
-            Console.WriteLine("Success");
+           
         }
         else
         {
             ShowMessage(ToastType.Danger);
         }
         await Load();
+        isFollow = false;
 
     }
 
@@ -115,4 +130,6 @@
     };
     #endregion
 
+
+    
 }

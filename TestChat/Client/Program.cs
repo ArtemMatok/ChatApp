@@ -8,6 +8,7 @@ using TestChat.Client.Services.MessageServiceFold;
 using TestChat.Client.Services.PostServiceFold;
 using TestChat.Client.Services.UserServ;
 using TestChat.Client.States;
+using TestChat.Shared.Data.Account.NotificationFold;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,4 +22,5 @@ builder.Services.AddScoped<IMediaAccountService, MediaAccountService>();
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<NotificationState>();
 await builder.Build().RunAsync();

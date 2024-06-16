@@ -10,6 +10,7 @@ namespace TestChat.Server.Repositories.MediaAccountRepositoryFold
         bool Create(MediaAccount mediaAccount);
         bool Update(MediaAccount mediaAccount);
         bool UpdateMediaAccountByFolowAccount(MediaAccount accountCurrent, MediaAccount accountFollowing);
+        
         bool Save();
         Task<MediaAccount> GetMediaAccountByUserName(string userName);
         Task<List<MediaAccount>> GetMediaAccountLikeByPost(Post post);
